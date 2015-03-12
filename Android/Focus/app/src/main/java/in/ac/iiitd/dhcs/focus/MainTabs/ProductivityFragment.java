@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import in.ac.iiitd.dhcs.focus.CustomUIClasses.MeterView;
 import in.ac.iiitd.dhcs.focus.R;
 
 
@@ -25,7 +26,7 @@ public class ProductivityFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-
+    MeterView productivityMeterView;
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -61,7 +62,11 @@ public class ProductivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_productivity, container, false);
+        View inflaterView=inflater.inflate(R.layout.fragment_productivity, container, false);
+        productivityMeterView=(MeterView)inflaterView.findViewById(R.id.productivityMeterView);
+        productivityMeterView.setProgress(20);
+        productivityMeterView.setTarget(80);
+        return inflaterView;
     }
 
 
