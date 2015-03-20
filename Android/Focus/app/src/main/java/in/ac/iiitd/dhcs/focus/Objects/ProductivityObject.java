@@ -43,7 +43,7 @@ public class ProductivityObject {
         this.usageDuration=duration;
     }
     public void putProductivityDuration(long duration){
-        this.usageDuration=duration;
+        this.productivityDuration=duration;
     }
     public void putProductivityScore(long Score) { this.productivityScore = Score; }
 }

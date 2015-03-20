@@ -98,6 +98,7 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         registerReceiver();
         startFocusService();
         dbs = new FocusDbHelper(context);
+        updateList();
     }
 
 
@@ -211,6 +212,11 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
     }
 
     @Override
+    public void onBackPressed() {
+        // TODO Auto-generated method stub
+        moveTaskToBack(true);
+    }
+    @Override
     public void onResume(){
         super.onResume();
         updateList();
@@ -235,7 +241,7 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
             obj.putPackageName(cursor.getString(2));
             obj.putUsageDuration(cursor.getLong(4));
             obj.putProductivityDuration(cursor.getLong(5));
-            CommonUtils.TotalProductivity +=cursor.getLong(5);
+            CommonUtils.TotalProductivity+= cursor.getLong(5);
             ProductivityList.add(obj);
         }
         cursor.close();
@@ -243,7 +249,8 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         Log.v(TAG,String.valueOf(ProductivityList.size()));
 
         for(ProductivityObject obj : ProductivityList){
-            Log.v(TAG,obj.getName()+" " + obj.getUsageDuration()+"s "+ obj.getUsageDuration()/CommonUtils.TotalProductivity +"%");
+            Log.v(TAG,obj.getName()+" " + String.valueOf(obj.getUsageDuration())+"s "+
+            String.format("%.2f",((float)(obj.getProductivityDuration()*100) / (float)CommonUtils.TotalProductivity)) +"%");
         }
     }
 }
