@@ -37,6 +37,7 @@ public class DbContract {
         public static abstract class ProductivityEntry implements BaseColumns {
             public static final String TABLE_NAME = "Productivity";
             public static final String APP_NAME = "App_Name";
+            public static final String PACKAGE_NAME = "Package_Name";
             public static final String TRACKING_DATE = "Tracking_Date"; //Store dates in yyyy-MM-dd format
             public static final String USAGE_DURATION = "Usage_Duration";   //Store time spent in millis
             public static final String PRODUCTIVE_DURATION = "Productive_Duration"; //Store productive time spent
@@ -45,6 +46,7 @@ public class DbContract {
                     "CREATE TABLE " + DbContract.ProductivityEntry.TABLE_NAME + " (" +
                             DbContract.ProductivityEntry._ID + " INTEGER PRIMARY KEY," +
                             ProductivityEntry.APP_NAME+TEXT_TYPE+COMMA_SEP+
+                            ProductivityEntry.PACKAGE_NAME + TEXT_TYPE + COMMA_SEP +
                             ProductivityEntry.TRACKING_DATE + TEXT_TYPE + COMMA_SEP +
                             ProductivityEntry.USAGE_DURATION + REAL_TYPE + COMMA_SEP +
                             ProductivityEntry.PRODUCTIVE_DURATION + REAL_TYPE +
