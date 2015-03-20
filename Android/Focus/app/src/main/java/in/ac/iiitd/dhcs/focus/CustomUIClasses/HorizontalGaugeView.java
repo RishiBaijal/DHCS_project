@@ -25,6 +25,7 @@ public class HorizontalGaugeView extends View {
     private RectF mDrawingRect,mBackgroundRect,mProgressRect;
 
     private static double M_PI_2 = Math.PI/2;
+    private static final String TAG="HorizontalGauge";
 
     //MeterColour
     private  int horizontalGaugeColour;
@@ -42,7 +43,7 @@ public class HorizontalGaugeView extends View {
 
         horizontalGaugeColour=res.getColor(R.color.horizontalGauge);
 
-        mBackgroundColor = res.getColor(R.color.horizontalGaugeBackground);
+//        mBackgroundColor = res.getColor(R.color.meterBackground);
         mBackgroundWidth = (int)(20 * density); // default to 20dp
         mPrimaryColor = horizontalGaugeColour;
         mPrimaryWidth = (int)(20 * density);  // default to 20dp
@@ -52,15 +53,15 @@ public class HorizontalGaugeView extends View {
 
         mRegularTextSize = (int)(mBackgroundWidth * 0.75); //Double the size of the width;
 
-        mRectPaintBackground = new Paint() {
-            {
-                setDither(true);
-                setStyle(Style.FILL);
-                setStrokeCap(Cap.ROUND);
-                setAntiAlias(true);
-            }
-        };
-        mRectPaintBackground.setColor(mBackgroundColor);
+//        mRectPaintBackground = new Paint() {
+//            {
+//                setDither(true);
+//                setStyle(Style.FILL);
+//                setStrokeCap(Cap.ROUND);
+//                setAntiAlias(true);
+//            }
+//        };
+//        mRectPaintBackground.setColor(mBackgroundColor);
 
         mRectPaintPrimary = new Paint() {
             {
@@ -75,13 +76,12 @@ public class HorizontalGaugeView extends View {
 
         Typeface tf = Typeface.create("Helvetica",Typeface.NORMAL);
         mRegularText=new Paint();
-        mRegularText.setColor(getResources().getColor(R.color.accent));
+        mRegularText.setColor(getResources().getColor(R.color.meterBackground));
         mRegularText.setTextSize(mRegularTextSize);
         mRegularText.setTextAlign(Paint.Align.CENTER);
         mRegularText.setTypeface(tf);
 
-        float maxW = mBackgroundWidth;
-        mPadding = maxW / 2;
+        mPadding = (int)(10 * density);
     }
 
     public void setProgress(float progress) {
@@ -96,15 +96,20 @@ public class HorizontalGaugeView extends View {
         super.onDraw(canvas);// bound our drawable Rect to stay fully within our canvas
 
         float left=0,top=0,right=mDrawingRect.right,bottom=mDrawingRect.bottom;
-        mBackgroundRect=mDrawingRect;
-        mBackgroundRect.set(left,top,right,bottom);
-        canvas.drawRoundRect(mDrawingRect, x_Corner, y_Corner, mRectPaintBackground);
+//        mBackgroundRect=new RectF(left,top,right,bottom);
+////        mBackgroundRect.set(left,top,right,bottom);
+//        canvas.drawRoundRect(mBackgroundRect, x_Corner, y_Corner, mRectPaintBackground);
 
-        mProgressRect=mBackgroundRect;
-        mProgressRect.set(left,top,(mProgressPercent/100)*right,bottom);
-        canvas.drawRoundRect(mDrawingRect, x_Corner, y_Corner, mRectPaintPrimary);
+//        Log.v(TAG,left+", "+top+", "+right+", "+bottom);
+//        Log.v(TAG,mBackgroundRect.left+", "+mBackgroundRect.top+", "+mBackgroundRect.right+", "+mBackgroundRect.bottom);
+
+        mProgressRect=new RectF(left,top,(mProgressPercent/100)*right,bottom);
+//        mProgressRect.set(left,top,(mProgressPercent/100)*right,bottom);
+        canvas.drawRoundRect(mProgressRect, x_Corner, y_Corner, mRectPaintPrimary);
 
         String valueString=((int)mProgressPercent)+"%";
+        if(mProgressPercent<10)
+            valueString="";
         canvas.drawText(valueString,mProgressRect.centerX(),mProgressRect.centerY()*1.5f,mRegularText);
 
     }
