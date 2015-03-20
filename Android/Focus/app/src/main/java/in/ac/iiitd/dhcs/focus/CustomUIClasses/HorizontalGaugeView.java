@@ -28,6 +28,7 @@ public class HorizontalGaugeView extends View {
 
     //MeterColour
     private  int horizontalGaugeColour;
+    private float x_Corner,y_Corner;
 
     public HorizontalGaugeView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -45,6 +46,9 @@ public class HorizontalGaugeView extends View {
         mBackgroundWidth = (int)(20 * density); // default to 20dp
         mPrimaryColor = horizontalGaugeColour;
         mPrimaryWidth = (int)(20 * density);  // default to 20dp
+
+        x_Corner=30*density;
+        y_Corner=30*density;
 
         mRegularTextSize = (int)(mBackgroundWidth * 0.75); //Double the size of the width;
 
@@ -94,14 +98,14 @@ public class HorizontalGaugeView extends View {
         float left=0,top=0,right=mDrawingRect.right,bottom=mDrawingRect.bottom;
         mBackgroundRect=mDrawingRect;
         mBackgroundRect.set(left,top,right,bottom);
-        canvas.drawRect(mDrawingRect, mRectPaintBackground);
+        canvas.drawRoundRect(mDrawingRect, x_Corner, y_Corner, mRectPaintBackground);
 
         mProgressRect=mBackgroundRect;
         mProgressRect.set(left,top,(mProgressPercent/100)*right,bottom);
-        canvas.drawRect(mDrawingRect,mRectPaintPrimary);
+        canvas.drawRoundRect(mDrawingRect, x_Corner, y_Corner, mRectPaintPrimary);
 
         String valueString=((int)mProgressPercent)+"%";
-        canvas.drawText(valueString,mProgressRect.centerX(),mProgressRect.centerY(),mRegularText);
+        canvas.drawText(valueString,mProgressRect.centerX(),mProgressRect.centerY()*1.5f,mRegularText);
 
     }
 
@@ -118,14 +122,14 @@ public class HorizontalGaugeView extends View {
         int widthWithoutPadding = width - getPaddingLeft() - getPaddingRight();
         int heigthWithoutPadding = height - getPaddingTop() - getPaddingBottom();
 
-        // set the dimensions
-        if (widthWithoutPadding > heigthWithoutPadding) {
-            size = heigthWithoutPadding;
-        } else {
-            size = widthWithoutPadding;
-        }
+//        // set the dimensions
+//        if (widthWithoutPadding > heigthWithoutPadding) {
+//            size = heigthWithoutPadding;
+//        } else {
+//            size = widthWithoutPadding;
+//        }
 
-        setMeasuredDimension(size + getPaddingLeft() + getPaddingRight(), size + getPaddingTop() + getPaddingBottom());
+        setMeasuredDimension(widthWithoutPadding + getPaddingLeft() + getPaddingRight(), heigthWithoutPadding + getPaddingTop() + getPaddingBottom());
     }
 
     @Override
