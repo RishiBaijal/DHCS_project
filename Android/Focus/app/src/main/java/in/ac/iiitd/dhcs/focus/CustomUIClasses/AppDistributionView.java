@@ -7,8 +7,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
-
 import in.ac.iiitd.dhcs.focus.R;
 
 /**
@@ -40,9 +38,13 @@ public class AppDistributionView extends LinearLayout {
     }
 
     public void setDuration(long duration){
-        SimpleDateFormat sdf=new SimpleDateFormat("HH'h' mm'm' ss's'");
+        duration=duration/1000;
+        long hours=duration/3600;
+        long minutes=(duration%3600)/60;
+        long seconds= ((duration%3600)%60);
 
-        textView.setText(sdf.format(duration).toString());
+        String valueString = hours+":"+minutes+":"+seconds;
+        textView.setText(valueString);
         invalidate();
         requestLayout();
     }
