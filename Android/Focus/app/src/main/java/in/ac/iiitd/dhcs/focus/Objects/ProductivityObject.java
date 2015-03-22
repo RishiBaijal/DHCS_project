@@ -8,7 +8,7 @@ import android.graphics.drawable.Drawable;
 public class ProductivityObject {
     private String appName;
     private String packageName;
-    private Drawable image;
+    private Drawable appIcon;
     private String trackingDate;
     private long usageDuration;
     private long productivityDuration;
@@ -31,6 +31,7 @@ public class ProductivityObject {
         return productivityDuration;
     }
     public long getProductivityScore() { return productivityScore; }
+    public Drawable getAppIcon() {return appIcon;}
 
     public void putName(String appName){
         this.appName=appName;
@@ -46,4 +47,5 @@ public class ProductivityObject {
         this.productivityDuration=duration;
     }
     public void putProductivityScore(long Score) { this.productivityScore = Score; }
+    public void putAppIcon(Drawable icon) {this.appIcon = icon;}
 }

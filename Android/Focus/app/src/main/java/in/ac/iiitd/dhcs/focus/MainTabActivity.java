@@ -3,6 +3,7 @@ package in.ac.iiitd.dhcs.focus;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
@@ -225,6 +226,7 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
     public void updateList(){
         SQLiteDatabase db = dbs.getWritableDatabase();
         ProductivityList = new ArrayList<ProductivityObject>();
+        PackageManager pm = context.getPackageManager();
         long timeInMillis = System.currentTimeMillis();
         String todaydate = CommonUtils.unixTimestampToDate(timeInMillis);
         CommonUtils.TotalProductivity=0L;
@@ -241,6 +243,11 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
             obj.putPackageName(cursor.getString(2));
             obj.putUsageDuration(cursor.getLong(4));
             obj.putProductivityDuration(cursor.getLong(5));
+            try {
+                obj.putAppIcon(getPackageManager().getApplicationIcon(cursor.getString(2)));
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
             CommonUtils.TotalProductivity+= cursor.getLong(5);
             ProductivityList.add(obj);
         }
