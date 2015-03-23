@@ -47,6 +47,6 @@ public class CommonUtils {
 			e.printStackTrace();
 		}
         
-        return ((date2.getTime() - date1.getTime())/1000L);
+        return ((date2.getTime() - date1.getTime()));
     }
 }

@@ -39,12 +39,12 @@ public class AppDistributionView extends LinearLayout {
     }
 
     public void setDuration(long duration){
-        duration=duration/1000;
+        duration=duration/1000L;
         long hours=duration/3600;
         long minutes=(duration%3600)/60;
         long seconds= ((duration%3600)%60);
 
-        String valueString = hours+":"+minutes+":"+seconds;
+        String valueString = hours+"h "+minutes+"m "+seconds+"s";
         textView.setText(valueString);
         invalidate();
         requestLayout();

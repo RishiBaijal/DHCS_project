@@ -45,7 +45,7 @@ public class FocusService extends Service {
     private Timer timer;
     private String activePackages = null;
     private ActivityManager a;
-    private long Productivityscore;
+    private float Productivityscore;
     
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -61,7 +61,7 @@ public class FocusService extends Service {
 	      
 	        currentapp = endtime = starttime =currentpack= null;
 	        duration = 0L;
-	        Productivityscore =7L;
+	        Productivityscore =0.7f;
 	        dbs = new FocusDbHelper(context);
 	        a = (ActivityManager)context.getSystemService("activity");
 	        try
@@ -120,14 +120,15 @@ public class FocusService extends Service {
      		           else if (!currentapp.equalsIgnoreCase(appname)){
      		        	   endtime = CommonUtils.unixTimestampToTime(timeInMillis);
      		        	   duration = CommonUtils.getTimeDiff(starttime, endtime);
+                           long Productivityduration=(long) Productivityscore*duration;
      		        	   
      		        	   if(getcount(currentapp,  CommonUtils.unixTimestampToDate(timeInMillis))>0){
-     		        		   updateData(currentapp, CommonUtils.unixTimestampToDate(timeInMillis), Productivityscore*duration);
+     		        		   updateData(currentapp, CommonUtils.unixTimestampToDate(timeInMillis), Productivityduration);
    		        	           updateProductivity();
      		        	   }
      		        	   else{
      		        	   insertData(currentapp,currentpack, CommonUtils.unixTimestampToDate(timeInMillis),
-        		        		   duration,Productivityscore*duration);
+        		        		   duration,Productivityduration);
                            updateProductivity();
      		        	   }
      		        	   
@@ -136,7 +137,7 @@ public class FocusService extends Service {
      		        	   currentpack = activePackages;
      		           }  		           
 
-     		           Log.i(TAG,currentapp +appname+String.valueOf(currentapp.equalsIgnoreCase(appname)));    		           
+     		           //Log.i(TAG,currentapp +appname+String.valueOf(currentapp.equalsIgnoreCase(appname)));
                      
                      };
                  };
@@ -156,14 +157,15 @@ public class FocusService extends Service {
          if(currentapp!=null){
        	   endtime = CommonUtils.unixTimestampToTime(timeInMillis);
        	   duration = CommonUtils.getTimeDiff(starttime, endtime);
-       	   
+
+             long Productivityduration=(long) Productivityscore*duration;
        	 if(getcount(currentapp,  CommonUtils.unixTimestampToDate(timeInMillis))>0){
-   		   updateData(currentapp, CommonUtils.unixTimestampToDate(timeInMillis), Productivityscore*duration);
+   		   updateData(currentapp, CommonUtils.unixTimestampToDate(timeInMillis), Productivityduration);
        	 }
        	 
        	 else{       	 
        	   insertData(currentapp,activePackages, CommonUtils.unixTimestampToDate(timeInMillis),
-	        		   duration,Productivityscore*duration);  
+	        		   duration,Productivityduration);
        	   
        	 }}
          updateProductivity();
@@ -322,7 +324,7 @@ public class FocusService extends Service {
             CommonUtils.TotalProductivity += cursor.getLong(1);
         }
 	cursor.close();
-	CommonUtils.ProductivityScore =( CommonUtils.TotalProductivity/ CommonUtils.TotalDuration)*10L;
-
-}
+	CommonUtils.ProductivityScore =(long)(((float)CommonUtils.TotalProductivity/(float) CommonUtils.TotalDuration)*100);
+    Log.v(TAG,CommonUtils.TotalProductivity +" "+  CommonUtils.TotalDuration +" "+100*((float)CommonUtils.TotalProductivity/(float) CommonUtils.TotalDuration));
+    }
 }

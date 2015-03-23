@@ -37,9 +37,7 @@ import in.ac.iiitd.dhcs.focus.Service.ScreenStateReceiver;
 
 public class MainTabActivity extends ActionBarActivity implements ActionBar.TabListener {
 
-    public static ArrayList<ProductivityObject> ProductivityList ;
     private static String TAG ="MainTabActivity";
-    FocusDbHelper dbs ;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -98,8 +96,6 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         mScreenStateReceiver = new ScreenStateReceiver();
         registerReceiver();
         startFocusService();
-        dbs = new FocusDbHelper(context);
-        updateList();
     }
 
 
@@ -217,47 +213,7 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         // TODO Auto-generated method stub
         moveTaskToBack(true);
     }
-    @Override
-    public void onResume(){
-        super.onResume();
-        updateList();
-    }
 
-    public void updateList(){
-        SQLiteDatabase db = dbs.getWritableDatabase();
-        ProductivityList = new ArrayList<ProductivityObject>();
-        PackageManager pm = context.getPackageManager();
-        long timeInMillis = System.currentTimeMillis();
-        String todaydate = CommonUtils.unixTimestampToDate(timeInMillis);
-        CommonUtils.TotalProductivity=0L;
-        String sql = "select * from '"+ DbContract.ProductivityEntry.TABLE_NAME+"'" +
-                " where "+ DbContract.ProductivityEntry.TRACKING_DATE+" LIKE '"+todaydate+"'"  ;
-        Cursor cursor = db.rawQuery(sql, null);
-        cursor.moveToFirst();
-        if (cursor != null && cursor.getCount() > 0) {
-            cursor.moveToFirst();
-        }
-        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            ProductivityObject obj = new ProductivityObject();
-            obj.putName(cursor.getString(1));
-            obj.putPackageName(cursor.getString(2));
-            obj.putUsageDuration(cursor.getLong(4));
-            obj.putProductivityDuration(cursor.getLong(5));
-            try {
-                obj.putAppIcon(getPackageManager().getApplicationIcon(cursor.getString(2)));
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
-            }
-            CommonUtils.TotalProductivity+= cursor.getLong(5);
-            ProductivityList.add(obj);
-        }
-        cursor.close();
 
-        Log.v(TAG,String.valueOf(ProductivityList.size()));
 
-        for(ProductivityObject obj : ProductivityList){
-            Log.v(TAG,obj.getName()+" " + String.valueOf(obj.getUsageDuration())+"s "+
-            String.format("%.2f",((float)(obj.getProductivityDuration()*100) / (float)CommonUtils.TotalProductivity)) +"%");
-        }
-    }
 }

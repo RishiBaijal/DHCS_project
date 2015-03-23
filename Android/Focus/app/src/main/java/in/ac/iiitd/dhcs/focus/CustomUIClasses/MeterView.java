@@ -127,6 +127,12 @@ public class MeterView extends View {
         requestLayout();
     }
 
+    public void setProgressValue(long duration){
+        mProgressValue = duration/1000L;
+
+        invalidate();
+        requestLayout();
+    }
     public void setTarget(float target) {
         mTarget = target;
 
@@ -181,8 +187,11 @@ public class MeterView extends View {
         canvas.drawText(valueString,mDrawingRect.centerX(),mDrawingRect.centerY()-(radius*0.2f),mPercentText);
 
         canvas.drawText("have been spent productively",mDrawingRect.centerX(),mDrawingRect.centerY()+(radius*0.35f),mRegularText);
-        SimpleDateFormat sdf=new SimpleDateFormat("HH'hrs' mm'mins'");
-        valueString = sdf.format(mProgressValue).toString();
+        long hours=mProgressValue/3600;
+        long minutes=(mProgressValue%3600)/60;
+        long seconds= (long) ((mProgressValue%3600)%60);
+        valueString = hours+"hrs "+minutes+"mins";
+
         canvas.drawText(valueString,mDrawingRect.centerX(),mDrawingRect.centerY()+(radius*0.25f),mTargetText);
 
     }
