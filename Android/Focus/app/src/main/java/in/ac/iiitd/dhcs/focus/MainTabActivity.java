@@ -1,11 +1,6 @@
 package in.ac.iiitd.dhcs.focus;
 
-import android.app.Dialog;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -15,13 +10,9 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import java.util.Locale;
 
-import in.ac.iiitd.dhcs.focus.Adapters.ImageAdapter;
 import in.ac.iiitd.dhcs.focus.MainTabs.ProductivityFragment;
 import in.ac.iiitd.dhcs.focus.MainTabs.StatsFragment;
 import in.ac.iiitd.dhcs.focus.MainTabs.ZenFragment;
@@ -43,20 +34,11 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
      * The {@link ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
-    public SharedPreferences mPreferences;
-    boolean showTut;
-    Context mContext;
-    RelativeLayout mOverlayLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_tab);
-
-        mPreferences = getSharedPreferences(Utils.SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE);
-        mOverlayLayout=(RelativeLayout)findViewById(R.id.OverlayLayout);
-        //check if this is the first run and show tutorial if so
-        checkPrefsAndShowOverlay();
 
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
@@ -88,11 +70,7 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
                             .setTabListener(this));
         }
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.overlayPager);
-        ImageAdapter adapter = new ImageAdapter(getApplicationContext());
-        viewPager.setAdapter(adapter);
-
-        // showActivityOverlay();
+        mViewPager.setCurrentItem(1);
     }
 
 
@@ -182,17 +160,5 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
             return null;
         }
     }
-    private void checkPrefsAndShowOverlay() {
-//check if first run and display overlays
 
-        boolean runFirst=  !mPreferences.contains(Utils.KEY_IS_FIRST_RUN);
-// use a default value using new Date()
-
-        if(runFirst){
-            mOverlayLayout.setVisibility(View.VISIBLE);
-        }else {
-            mOverlayLayout.setVisibility(View.GONE);
-        }
-        mPreferences.edit().putBoolean(Utils.KEY_IS_FIRST_RUN,false).commit();
-    }
 }

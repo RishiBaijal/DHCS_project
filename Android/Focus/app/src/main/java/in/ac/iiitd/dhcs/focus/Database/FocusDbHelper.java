@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class FocusDbHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "BillPredict.db";
+    public static final String DATABASE_NAME = "Focus.db";
 
     public FocusDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
