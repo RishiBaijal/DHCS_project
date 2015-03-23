@@ -6,6 +6,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
+import in.ac.iiitd.dhcs.focus.ListAdapters.TrackedAppListAdapter;
+
 
 public class TrackedAppsAcitivity extends ActionBarActivity {
 

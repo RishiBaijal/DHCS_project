@@ -1,4 +1,4 @@
-package in.ac.iiitd.dhcs.focus;
+package in.ac.iiitd.dhcs.focus.ListAdapters;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
@@ -17,6 +17,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import in.ac.iiitd.dhcs.focus.R;
 
 /**
  * Created by Shubham on 23 Mar 15.
