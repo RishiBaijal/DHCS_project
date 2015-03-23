@@ -1,11 +1,18 @@
 package in.ac.iiitd.dhcs.focus.MainTabs;
 
 
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import in.ac.iiitd.dhcs.focus.CustomUIClasses.MeterView;
 import in.ac.iiitd.dhcs.focus.R;
@@ -22,9 +29,12 @@ public class ProductivityFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private Context mContext;
 
     MeterView productivityMeterView;
     /**
@@ -56,6 +66,13 @@ public class ProductivityFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mContext = activity;
     }
 
     @Override
@@ -68,6 +85,9 @@ public class ProductivityFragment extends Fragment {
         productivityMeterView.setTarget(80);
         return inflaterView;
     }
+
+
+
 
 
 }

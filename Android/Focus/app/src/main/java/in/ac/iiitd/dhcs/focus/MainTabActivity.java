@@ -1,6 +1,10 @@
 package in.ac.iiitd.dhcs.focus;
 
+import android.app.Dialog;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -10,6 +14,9 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import java.util.Locale;
 
@@ -34,6 +41,8 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
      * The {@link ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
+    public SharedPreferences setNotif;
+    boolean showTut;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +80,13 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         }
 
         mViewPager.setCurrentItem(1);
+        setNotif = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        // SharedPref tutorial
+        showTut = setNotif.getBoolean("tutorial", true);
+
+        if (showTut == true) {
+            showActivityOverlay();
+        }
     }
 
 
@@ -159,6 +175,31 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
             }
             return null;
         }
+    }
+
+    private void showActivityOverlay() {
+        final Dialog dialog = new Dialog(this,
+                android.R.style.Theme_Holo_Dialog);
+
+        dialog.setContentView(R.layout.overlay_activity);
+
+        RelativeLayout layout = (RelativeLayout) dialog
+                .findViewById(R.id.llOverlay_activity);
+
+        layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Get SharedPrefs
+                PreferenceManager.setDefaultValues(MainTabActivity.this, R.xml.prefs, true);
+                SharedPreferences setNotif = PreferenceManager
+                        .getDefaultSharedPreferences(MainTabActivity.this);
+                setNotif.edit().putBoolean("tutorial", false).commit();
+               // showTut = false;
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 
 }
