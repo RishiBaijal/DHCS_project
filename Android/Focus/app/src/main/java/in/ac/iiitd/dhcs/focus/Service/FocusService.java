@@ -41,7 +41,7 @@ public class FocusService extends Service {
     private volatile Field c;
     private int d;
     private static String starttime,endtime,currentapp,currentpack;
-    private static long duration;
+    private static float duration;
     private Timer timer;
     private String activePackages = null;
     private ActivityManager a;
@@ -60,7 +60,7 @@ public class FocusService extends Service {
 	        isServiceRunning = false;
 	      
 	        currentapp = endtime = starttime =currentpack= null;
-	        duration = 0L;
+	        duration = 0f;
 	        Productivityscore =0.7f;
 	        dbs = new FocusDbHelper(context);
 	        a = (ActivityManager)context.getSystemService("activity");
@@ -120,7 +120,7 @@ public class FocusService extends Service {
      		           else if (!currentapp.equalsIgnoreCase(appname)){
      		        	   endtime = CommonUtils.unixTimestampToTime(timeInMillis);
      		        	   duration = CommonUtils.getTimeDiff(starttime, endtime);
-                           long Productivityduration=(long) Productivityscore*duration;
+                           long Productivityduration=(long) (Productivityscore*duration);
      		        	   
      		        	   if(getcount(currentapp,  CommonUtils.unixTimestampToDate(timeInMillis))>0){
      		        		   updateData(currentapp, CommonUtils.unixTimestampToDate(timeInMillis), Productivityduration);
@@ -158,7 +158,7 @@ public class FocusService extends Service {
        	   endtime = CommonUtils.unixTimestampToTime(timeInMillis);
        	   duration = CommonUtils.getTimeDiff(starttime, endtime);
 
-             long Productivityduration=(long) Productivityscore*duration;
+             long Productivityduration=(long) (Productivityscore*duration);
        	 if(getcount(currentapp,  CommonUtils.unixTimestampToDate(timeInMillis))>0){
    		   updateData(currentapp, CommonUtils.unixTimestampToDate(timeInMillis), Productivityduration);
        	 }
@@ -258,7 +258,7 @@ public class FocusService extends Service {
 		        return i;
 		    }
 		   
-	public void insertData(String AppName,String PackName,String Date,long time,long Productive) {
+	public void insertData(String AppName,String PackName,String Date,float time,long Productive) {
 		SQLiteDatabase db = dbs.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put(ProductivityEntry.APP_NAME,AppName);
@@ -285,15 +285,15 @@ public class FocusService extends Service {
 			return length;
 	 }
   
-  public void updateData(String AppName,String Date,long time){
+  public void updateData(String AppName,String Date,float time){
   	
   	SQLiteDatabase db = dbs.getWritableDatabase();
   	String sql = "select "+ProductivityEntry.APP_NAME+","+ProductivityEntry._ID+" from '"+ProductivityEntry.TABLE_NAME+"'" +
   			" where "+ProductivityEntry.APP_NAME+" LIKE '"+AppName+"' and "+ProductivityEntry.TRACKING_DATE+" LIKE '"+Date+"'"  ;
 	Cursor cursor = db.rawQuery(sql, null);
 	cursor.moveToFirst();
-	long oldTime = cursor.getLong(0);
-	long newTime = oldTime + time;
+	float oldTime = cursor.getFloat(0);
+	float newTime = oldTime + time;
 	String rowid = cursor.getString(1);
 	cursor.close();
 	ContentValues values = new ContentValues();

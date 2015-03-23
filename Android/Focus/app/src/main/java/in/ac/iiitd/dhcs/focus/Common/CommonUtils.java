@@ -36,7 +36,7 @@ public class CommonUtils {
         return str;
     }
     
-    public static long getTimeDiff(String start,String end){
+    public static float getTimeDiff(String start,String end){
     	java.text.DateFormat df = new java.text.SimpleDateFormat("HH:mm:ss");
         java.util.Date date1 = null,date2 = null;
 		try {
@@ -47,6 +47,6 @@ public class CommonUtils {
 			e.printStackTrace();
 		}
         
-        return ((date2.getTime() - date1.getTime()));
+        return (float)((date2.getTime() - date1.getTime()));
     }
 }
