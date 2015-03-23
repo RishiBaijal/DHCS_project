@@ -17,6 +17,7 @@ public class AppDistributionView extends LinearLayout {
     ImageView imageView;
     TextView textView;
     HorizontalGaugeView hgView;
+    String appName;
 
     public AppDistributionView(Context context, AttributeSet attrs) {
         super(context);
@@ -53,5 +54,9 @@ public class AppDistributionView extends LinearLayout {
         imageView.setImageDrawable(icon);
         invalidate();
         requestLayout();
+    }
+
+    public void setAppName(String name){
+        appName=name;
     }
 }

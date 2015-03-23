@@ -3,7 +3,8 @@
     android:layout_height="match_parent"
     tools:context="in.ac.iiitd.dhcs.focus.MainTabs.ProductivityFragment"
     android:orientation="vertical"
-    android:gravity="center_horizontal">
+    android:gravity="center_horizontal"
+    android:id="@+id/productivity_scrollview">
 
 
     <LinearLayout

@@ -2,7 +2,6 @@ package in.ac.iiitd.dhcs.focus.MainTabs;
 
 
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,22 +74,22 @@ public class ZenFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-        final long totalTime=1*60*1000;//millisecond
-        new CountDownTimer(totalTime, 60) {
-            long minMillisLeft=totalTime;
-            public void onTick(long millisUntilFinished) {
-//                Log.v(TAG,""+millisUntilFinished);
-                if(millisUntilFinished<minMillisLeft)
-                    minMillisLeft=millisUntilFinished;
-                timerView.setProgress(((float)(totalTime-minMillisLeft)/(float)totalTime)*100);
-                timerView.setProgressValue(totalTime-minMillisLeft);
-            }
-
-            public void onFinish() {
-
-            }
-        }
-           .start();
+//        final long totalTime=1*60*1000;//millisecond
+//        new CountDownTimer(totalTime, 60) {
+//            long minMillisLeft=totalTime;
+//            public void onTick(long millisUntilFinished) {
+////                Log.v(TAG,""+millisUntilFinished);
+//                if(millisUntilFinished<minMillisLeft)
+//                    minMillisLeft=millisUntilFinished;
+//                timerView.setProgress(((float)(totalTime-minMillisLeft)/(float)totalTime)*100);
+//                timerView.setProgressValue(totalTime-minMillisLeft);
+//            }
+//
+//            public void onFinish() {
+//
+//            }
+//        }
+//           .start();
     }
 
 
