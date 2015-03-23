@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import in.ac.iiitd.dhcs.focus.CustomUIClasses.TimerView;
 import in.ac.iiitd.dhcs.focus.R;
 
 
@@ -16,6 +17,9 @@ import in.ac.iiitd.dhcs.focus.R;
  * create an instance of this fragment.
  */
 public class ZenFragment extends Fragment {
+    TimerView timerView;
+    private final static String TAG="ZenFragment";
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -61,7 +65,31 @@ public class ZenFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_zen, container, false);
+        View inflaterView=inflater.inflate(R.layout.fragment_zen, container, false);
+        timerView= (TimerView) inflaterView.findViewById(R.id.timerView);
+        timerView.setProgress(50);
+        return inflaterView;
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+//        final long totalTime=1*60*1000;//millisecond
+//        new CountDownTimer(totalTime, 60) {
+//            long minMillisLeft=totalTime;
+//            public void onTick(long millisUntilFinished) {
+////                Log.v(TAG,""+millisUntilFinished);
+//                if(millisUntilFinished<minMillisLeft)
+//                    minMillisLeft=millisUntilFinished;
+//                timerView.setProgress(((float)(totalTime-minMillisLeft)/(float)totalTime)*100);
+//                timerView.setProgressValue(totalTime-minMillisLeft);
+//            }
+//
+//            public void onFinish() {
+//
+//            }
+//        }
+//           .start();
     }
 
 

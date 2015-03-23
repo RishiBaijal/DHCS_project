@@ -12,7 +12,7 @@ public class DbContract {
         private static final String REAL_TYPE = " REAL";
         private static final String COMMA_SEP = ",";
 
-        /* Any app that the user chooses to track will be placed in this column 
+        /* Any app that the user chooses to track will be placed in these column
         with its productivity score set by the user. 
         We will only track and process the time spent on these apps*/
         public static abstract class TrackedAppEntry implements BaseColumns {
@@ -32,11 +32,12 @@ public class DbContract {
         }
 
         /*Every time the user uses a tracked app and then stops/pauses it, 
-        this table must be updated. This is the primary table that we will use to analyse the 
+        this table must be updated. These are the columns that we will use to analyse the
         productivity*/
         public static abstract class ProductivityEntry implements BaseColumns {
             public static final String TABLE_NAME = "Productivity";
             public static final String APP_NAME = "App_Name";
+            public static final String PACKAGE_NAME = "Package_Name";
             public static final String TRACKING_DATE = "Tracking_Date"; //Store dates in yyyy-MM-dd format
             public static final String USAGE_DURATION = "Usage_Duration";   //Store time spent in millis
             public static final String PRODUCTIVE_DURATION = "Productive_Duration"; //Store productive time spent
@@ -45,6 +46,7 @@ public class DbContract {
                     "CREATE TABLE " + DbContract.ProductivityEntry.TABLE_NAME + " (" +
                             DbContract.ProductivityEntry._ID + " INTEGER PRIMARY KEY," +
                             ProductivityEntry.APP_NAME+TEXT_TYPE+COMMA_SEP+
+                            ProductivityEntry.PACKAGE_NAME + TEXT_TYPE + COMMA_SEP +
                             ProductivityEntry.TRACKING_DATE + TEXT_TYPE + COMMA_SEP +
                             ProductivityEntry.USAGE_DURATION + REAL_TYPE + COMMA_SEP +
                             ProductivityEntry.PRODUCTIVE_DURATION + REAL_TYPE +

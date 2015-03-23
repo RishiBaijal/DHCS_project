@@ -1,24 +1,26 @@
 package in.ac.iiitd.dhcs.focus.Objects;
 
+import android.graphics.drawable.Drawable;
+
 /**
  * Created by vedantdasswain on 11/03/15.
  */
 public class ProductivityObject {
     private String appName;
+    private String packageName;
+    private Drawable appIcon;
     private String trackingDate;
     private long usageDuration;
     private long productivityDuration;
+    private long productivityScore;
 
-    public ProductivityObject(String name,String date,long uDuration,long pDuration){
-        this.appName=name;
-        this.trackingDate=date;
-        this.usageDuration=uDuration;
-        this.productivityDuration=pDuration;
+    public ProductivityObject(){
     }
 
     public String getName(){
         return appName;
     }
+    public String getPackageName() {return  packageName;}
     public String getDate(){
         return trackingDate;
     }
@@ -28,10 +30,13 @@ public class ProductivityObject {
     public long getProductivityDuration(){
         return productivityDuration;
     }
+    public long getProductivityScore() { return productivityScore; }
+    public Drawable getAppIcon() {return appIcon;}
 
     public void putName(String appName){
         this.appName=appName;
     }
+    public void putPackageName(String packageName) {this.packageName=packageName; }
     public void putReading(String trackingDate){
         this.trackingDate=trackingDate;
     }
@@ -39,6 +44,8 @@ public class ProductivityObject {
         this.usageDuration=duration;
     }
     public void putProductivityDuration(long duration){
-        this.usageDuration=duration;
+        this.productivityDuration=duration;
     }
+    public void putProductivityScore(long Score) { this.productivityScore = Score; }
+    public void putAppIcon(Drawable icon) {this.appIcon = icon;}
 }

@@ -1,9 +1,9 @@
 package in.ac.iiitd.dhcs.focus;
 
+import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
+import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,20 +12,21 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import java.util.List;
 import java.util.Locale;
 
 import in.ac.iiitd.dhcs.focus.MainTabs.ProductivityFragment;
 import in.ac.iiitd.dhcs.focus.MainTabs.StatsFragment;
 import in.ac.iiitd.dhcs.focus.MainTabs.ZenFragment;
+import in.ac.iiitd.dhcs.focus.Service.FocusService;
+import in.ac.iiitd.dhcs.focus.Service.ScreenStateReceiver;
 
 
 public class MainTabActivity extends ActionBarActivity implements ActionBar.TabListener {
 
+    private static String TAG ="MainTabActivity";
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -36,6 +37,8 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
      */
     SectionsPagerAdapter mSectionsPagerAdapter;
 
+    Context context;
+    private static ScreenStateReceiver mScreenStateReceiver;
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -46,6 +49,7 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_tab);
 
+        context = getApplicationContext();
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -77,6 +81,10 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         }
 
         mViewPager.setCurrentItem(1);
+
+        mScreenStateReceiver = new ScreenStateReceiver();
+        registerReceiver();
+        startFocusService();
     }
 
 
@@ -171,5 +179,35 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
             return null;
         }
     }
+
+
+    private void startFocusService(){
+        Intent intent = new Intent(context, FocusService.class);
+        startService(intent);
+    }
+
+    private void stopFocusService(){
+        Intent intent = new Intent(context, FocusService.class);
+        stopService(intent);
+    }
+    private void registerReceiver(){
+        IntentFilter screenStateFilter = new IntentFilter();
+        screenStateFilter.addAction(Intent.ACTION_SCREEN_ON);
+        screenStateFilter.addAction(Intent.ACTION_SCREEN_OFF);
+
+        if (Build.VERSION.SDK_INT >= 17) {
+            screenStateFilter.addAction(Intent.ACTION_DREAMING_STARTED);
+            screenStateFilter.addAction(Intent.ACTION_DREAMING_STOPPED);
+        }
+        registerReceiver(mScreenStateReceiver, screenStateFilter);
+    }
+
+    @Override
+    public void onBackPressed() {
+        // TODO Auto-generated method stub
+        moveTaskToBack(true);
+    }
+
+
 
 }
