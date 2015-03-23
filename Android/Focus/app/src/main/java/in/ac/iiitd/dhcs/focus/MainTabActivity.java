@@ -1,5 +1,9 @@
 package in.ac.iiitd.dhcs.focus;
 
+import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -8,9 +12,11 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.List;
 import java.util.Locale;
 
 import in.ac.iiitd.dhcs.focus.MainTabs.ProductivityFragment;
@@ -91,6 +97,11 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }
+        else if (id == R.id.action_tracked_apps)
+        {
+            Intent intent = new Intent(this, TrackedAppsAcitivity.class);
+            this.startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
