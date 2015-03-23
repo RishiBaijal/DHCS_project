@@ -1,6 +1,7 @@
 package in.ac.iiitd.dhcs.focus;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import android.widget.RelativeLayout;
 
 import java.util.Locale;
 
+import in.ac.iiitd.dhcs.focus.Adapters.ImageAdapter;
 import in.ac.iiitd.dhcs.focus.MainTabs.ProductivityFragment;
 import in.ac.iiitd.dhcs.focus.MainTabs.StatsFragment;
 import in.ac.iiitd.dhcs.focus.MainTabs.ZenFragment;
@@ -41,13 +43,20 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
      * The {@link ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
-    public SharedPreferences setNotif;
+    public SharedPreferences mPreferences;
     boolean showTut;
+    Context mContext;
+    RelativeLayout mOverlayLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_tab);
+
+        mPreferences = getSharedPreferences(Utils.SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE);
+        mOverlayLayout=(RelativeLayout)findViewById(R.id.OverlayLayout);
+        //check if this is the first run and show tutorial if so
+        checkPrefsAndShowOverlay();
 
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
@@ -79,14 +88,11 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
                             .setTabListener(this));
         }
 
-        mViewPager.setCurrentItem(1);
-        setNotif = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        // SharedPref tutorial
-        showTut = setNotif.getBoolean("tutorial", true);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.overlayPager);
+        ImageAdapter adapter = new ImageAdapter(getApplicationContext());
+        viewPager.setAdapter(adapter);
 
-        if (showTut == true) {
-            showActivityOverlay();
-        }
+        // showActivityOverlay();
     }
 
 
@@ -176,30 +182,17 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
             return null;
         }
     }
+    private void checkPrefsAndShowOverlay() {
+//check if first run and display overlays
 
-    private void showActivityOverlay() {
-        final Dialog dialog = new Dialog(this,
-                android.R.style.Theme_Holo_Dialog);
+        boolean runFirst=  !mPreferences.contains(Utils.KEY_IS_FIRST_RUN);
+// use a default value using new Date()
 
-        dialog.setContentView(R.layout.overlay_activity);
-
-        RelativeLayout layout = (RelativeLayout) dialog
-                .findViewById(R.id.llOverlay_activity);
-
-        layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Get SharedPrefs
-                PreferenceManager.setDefaultValues(MainTabActivity.this, R.xml.prefs, true);
-                SharedPreferences setNotif = PreferenceManager
-                        .getDefaultSharedPreferences(MainTabActivity.this);
-                setNotif.edit().putBoolean("tutorial", false).commit();
-               // showTut = false;
-                dialog.dismiss();
-            }
-        });
-
-        dialog.show();
+        if(runFirst){
+            mOverlayLayout.setVisibility(View.VISIBLE);
+        }else {
+            mOverlayLayout.setVisibility(View.GONE);
+        }
+        mPreferences.edit().putBoolean(Utils.KEY_IS_FIRST_RUN,false).commit();
     }
-
 }

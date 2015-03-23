@@ -78,7 +78,7 @@ public class ProductivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        // Inflate the activity_main_tab for this fragment
         View inflaterView=inflater.inflate(R.layout.fragment_productivity, container, false);
         productivityMeterView=(MeterView)inflaterView.findViewById(R.id.productivityMeterView);
         productivityMeterView.setProgress(20);

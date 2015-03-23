@@ -94,7 +94,7 @@ public class StatsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        // Inflate the activity_main_tab for this fragment
         mView = inflater.inflate(R.layout.fragment_stats, container, false);
         //openPieChart();
         //openScatterChart();
