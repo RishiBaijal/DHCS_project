@@ -5,8 +5,7 @@
     <color name="primaryLight">#fffffefd</color>
     <color name="meterGauge">@color/primaryDark</color>
     <color name="meterBackground">#fffffefd</color>
-    <color name="horizontalGauge">@color/primaryLight</color>
-    <color name="horizontalGaugeBackground">@color/meterGauge</color>
+    <color name="horizontalGauge">@color/primaryDark</color>
     <color name="target">#fff55000</color>
     <color name="accent">#fff5af00</color>
 </resources>

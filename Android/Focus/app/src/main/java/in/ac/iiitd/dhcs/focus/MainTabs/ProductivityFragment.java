@@ -6,7 +6,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
+import java.util.Random;
+
+import in.ac.iiitd.dhcs.focus.CustomUIClasses.AppDistributionView;
 import in.ac.iiitd.dhcs.focus.CustomUIClasses.MeterView;
 import in.ac.iiitd.dhcs.focus.R;
 
@@ -66,6 +70,17 @@ public class ProductivityFragment extends Fragment {
         productivityMeterView=(MeterView)inflaterView.findViewById(R.id.productivityMeterView);
         productivityMeterView.setProgress(20);
         productivityMeterView.setTarget(80);
+
+        LinearLayout ll=(LinearLayout)inflaterView.findViewById(R.id.productivityLinearLayout);
+
+        for(int i=0;i<10;i++) {
+            Random random=new Random(9);
+
+            AppDistributionView app1 = new AppDistributionView(getActivity(), null);
+            ll.addView(app1);
+            app1.setProgress(10*i);
+            app1.setDuration((long) (0.5*i * 60 * 60 * 1000));
+        }
         return inflaterView;
     }
 
