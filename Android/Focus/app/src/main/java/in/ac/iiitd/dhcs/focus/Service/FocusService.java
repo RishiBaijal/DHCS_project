@@ -288,23 +288,22 @@ public class FocusService extends Service {
   public void updateData(String AppName,String Date,float time){
   	
   	SQLiteDatabase db = dbs.getWritableDatabase();
-  	String sql = "select "+ProductivityEntry.APP_NAME+","+ProductivityEntry._ID+" from '"+ProductivityEntry.TABLE_NAME+"'" +
+  	String sql = "select "+ProductivityEntry.USAGE_DURATION+","+ProductivityEntry._ID+" from '"+ProductivityEntry.TABLE_NAME+"'" +
   			" where "+ProductivityEntry.APP_NAME+" LIKE '"+AppName+"' and "+ProductivityEntry.TRACKING_DATE+" LIKE '"+Date+"'"  ;
 	Cursor cursor = db.rawQuery(sql, null);
 	cursor.moveToFirst();
 	float oldTime = cursor.getFloat(0);
 	float newTime = oldTime + time;
+    Log.v(TAG,oldTime + " " + newTime);
 	String rowid = cursor.getString(1);
-	cursor.close();
+    cursor.close();
 	ContentValues values = new ContentValues();
 	values.put(ProductivityEntry.USAGE_DURATION, newTime);
 	values.put(ProductivityEntry.PRODUCTIVE_DURATION, Productivityscore*newTime);
 	db.update(ProductivityEntry.TABLE_NAME, values,  ProductivityEntry._ID+"="+  rowid, null);
-	
 	db.close();
   }
-  
-  
+
   public void updateProductivity(){
 	SQLiteDatabase db = dbs.getWritableDatabase();
     long timeInMillis = System.currentTimeMillis();

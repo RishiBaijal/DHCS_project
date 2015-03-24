@@ -7,6 +7,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +18,8 @@ import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import in.ac.iiitd.dhcs.focus.Common.CommonUtils;
 import in.ac.iiitd.dhcs.focus.CustomUIClasses.AppDistributionView;
@@ -46,7 +50,7 @@ public class ProductivityFragment extends Fragment {
     FocusDbHelper dbs ;
     MeterView productivityMeterView;
     private Context context;
-
+    private ArrayList<AppDistributionView> appDistributionList = new ArrayList<AppDistributionView>();
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -84,7 +88,14 @@ public class ProductivityFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-        updateList();
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //Do something here
+                removeViews();
+                updateList();
+            }
+        }, 700);
     }
 
     @Override
@@ -106,6 +117,15 @@ public class ProductivityFragment extends Fragment {
         app1.setDuration(duration);
         app1.setIcon(icon);
         app1.setAppName(name);
+        appDistributionList.add(app1);
+    }
+
+    private void removeViews() {
+        if(!appDistributionList.isEmpty()){
+            for(AppDistributionView app1:appDistributionList)
+                ll.removeView(app1);
+            appDistributionList.clear();
+        }
     }
 
     public void setMainProductivty(){
@@ -129,6 +149,7 @@ public class ProductivityFragment extends Fragment {
         }
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
             ProductivityObject obj = new ProductivityObject();
+            if(!cursor.getString(1).equalsIgnoreCase("Unknown")){
             obj.putName(cursor.getString(1));
             obj.putPackageName(cursor.getString(2));
             obj.putUsageDuration(cursor.getLong(4));
@@ -139,10 +160,13 @@ public class ProductivityFragment extends Fragment {
                 e.printStackTrace();
             }
             CommonUtils.TotalProductivity+= cursor.getLong(5);
-            ProductivityList.add(obj);
+            ProductivityList.add(obj);}
+
+            else{
+                continue;
+            }
         }
         cursor.close();
-
         setMainProductivty();
         Log.v(TAG, String.valueOf(ProductivityList.size()));
 
@@ -155,9 +179,8 @@ public class ProductivityFragment extends Fragment {
             else{
              progress=(float)(obj.getProductivityDuration()*100) / (float)(CommonUtils.TotalProductivity);
             }
+            Log.v(TAG, obj.getName()+" " + obj.getUsageDuration() + " " + obj.getProductivityDuration());
             addAppDistribution(obj.getName(),obj.getAppIcon(),obj.getProductivityDuration(),progress);
         }
     }
-
-
 }
