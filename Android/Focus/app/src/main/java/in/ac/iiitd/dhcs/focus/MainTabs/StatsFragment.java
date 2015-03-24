@@ -1,40 +1,30 @@
 package in.ac.iiitd.dhcs.focus.MainTabs;
 
 
+import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
-import in.ac.iiitd.dhcs.focus.R;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
-
 import org.achartengine.chart.PointStyle;
 import org.achartengine.model.TimeSeries;
-import org.achartengine.model.XYSeries;
+import org.achartengine.model.XYMultipleSeriesDataset;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
 
-import org.achartengine.model.CategorySeries;
-
-import org.achartengine.model.XYMultipleSeriesDataset;
-import org.achartengine.renderer.DefaultRenderer;
-import org.achartengine.renderer.SimpleSeriesRenderer;
-
-
-import android.content.Intent;
-import android.graphics.Color;
-
-import android.widget.LinearLayout;
-
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Random;
+
+import in.ac.iiitd.dhcs.focus.R;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -164,12 +154,10 @@ public class StatsFragment extends Fragment {
         GraphicalView ChartView;// = (GraphicalView) ChartFactory.getView(getActivity().getApplicationContext(), dataset, multiRenderer);
         ChartView = (GraphicalView) ChartFactory.getTimeChartView(getActivity().getApplicationContext(), dataset, multiRenderer,"dd-MMM-yyyy");
         chartContainer.addView(ChartView);
-
-
-
-
-
     }
+
+
+
 
 
 

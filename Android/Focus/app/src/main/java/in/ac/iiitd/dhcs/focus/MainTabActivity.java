@@ -1,11 +1,8 @@
 package in.ac.iiitd.dhcs.focus;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -16,12 +13,13 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+
+
+import com.github.amlcurran.showcaseview.*;
 
 import java.util.Locale;
 
-import in.ac.iiitd.dhcs.focus.Adapters.ImageAdapter;
 import in.ac.iiitd.dhcs.focus.MainTabs.ProductivityFragment;
 import in.ac.iiitd.dhcs.focus.MainTabs.StatsFragment;
 import in.ac.iiitd.dhcs.focus.MainTabs.ZenFragment;
@@ -54,9 +52,9 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         setContentView(R.layout.activity_main_tab);
 
         mPreferences = getSharedPreferences(Utils.SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE);
-        mOverlayLayout=(RelativeLayout)findViewById(R.id.OverlayLayout);
+       // mOverlayLayout=(RelativeLayout)findViewById(R.id.OverlayLayout);
         //check if this is the first run and show tutorial if so
-        checkPrefsAndShowOverlay();
+        //checkPrefsAndShowOverlay();
 
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
@@ -88,9 +86,13 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
                             .setTabListener(this));
         }
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.overlayPager);
-        ImageAdapter adapter = new ImageAdapter(getApplicationContext());
-        viewPager.setAdapter(adapter);
+
+
+
+
+       // ViewPager viewPager = (ViewPager) findViewById(R.id.overlayPager);
+       // ImageAdapter adapter = new ImageAdapter(getApplicationContext());
+       // viewPager.setAdapter(adapter);
 
         // showActivityOverlay();
     }

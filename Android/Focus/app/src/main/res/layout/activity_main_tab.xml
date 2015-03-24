@@ -10,9 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/pager"
+
         />
 
-    <RelativeLayout
+  <!--  <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/OverlayLayout"
@@ -22,5 +23,5 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/overlayPager"/>
-    </RelativeLayout>
+    </RelativeLayout>  !-->
 </RelativeLayout>
