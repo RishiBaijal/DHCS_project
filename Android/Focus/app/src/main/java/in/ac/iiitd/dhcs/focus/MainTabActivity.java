@@ -1,6 +1,7 @@
 package in.ac.iiitd.dhcs.focus;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,11 +13,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.RelativeLayout;
 
-
-import com.github.amlcurran.showcaseview.*;
 
 import java.util.Locale;
 
@@ -54,7 +52,7 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         mPreferences = getSharedPreferences(Utils.SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE);
        // mOverlayLayout=(RelativeLayout)findViewById(R.id.OverlayLayout);
         //check if this is the first run and show tutorial if so
-        //checkPrefsAndShowOverlay();
+        checkPrefsAndShowOverlay();
 
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
@@ -189,11 +187,13 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
 
         boolean runFirst=  !mPreferences.contains(Utils.KEY_IS_FIRST_RUN);
 // use a default value using new Date()
+        Intent myIntent = new Intent(this, OverlayActivity.class);
+
 
         if(runFirst){
-            mOverlayLayout.setVisibility(View.VISIBLE);
+            startActivity(myIntent);
         }else {
-            mOverlayLayout.setVisibility(View.GONE);
+
         }
         mPreferences.edit().putBoolean(Utils.KEY_IS_FIRST_RUN,false).commit();
     }
