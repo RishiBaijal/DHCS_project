@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import in.ac.iiitd.dhcs.focus.Common.CommonUtils;
 import in.ac.iiitd.dhcs.focus.CustomUIClasses.AppDistributionView;
@@ -45,6 +44,7 @@ public class ProductivityFragment extends Fragment {
     LinearLayout ll;
     FocusDbHelper dbs ;
     MeterView productivityMeterView;
+    ArrayList<AppDistributionView> appDistributionList=new ArrayList<AppDistributionView>();
     private Context context;
 
     /**
@@ -84,6 +84,7 @@ public class ProductivityFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
+        removeViews();
         updateList();
     }
 
@@ -106,6 +107,15 @@ public class ProductivityFragment extends Fragment {
         app1.setDuration(duration);
         app1.setIcon(icon);
         app1.setAppName(name);
+        appDistributionList.add(app1);
+    }
+
+    private void removeViews() {
+        if(!appDistributionList.isEmpty()){
+            for(AppDistributionView app1:appDistributionList)
+                ll.removeView(app1);
+            appDistributionList.clear();
+        }
     }
 
     public void setMainProductivty(){

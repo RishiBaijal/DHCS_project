@@ -42,7 +42,7 @@ public class TimerView extends View {
         Resources res = mContext.getResources();
         float density = res.getDisplayMetrics().density;
 
-        meterColour=res.getColor(R.color.meterGauge);
+        meterColour=res.getColor(R.color.accent);
 
         targetColour=res.getColor(R.color.meterGauge);
 
@@ -87,7 +87,7 @@ public class TimerView extends View {
 
         Typeface tf = Typeface.create("Helvetica",Typeface.NORMAL);
         mRegularText=new Paint();
-        mRegularText.setColor(res.getColor(android.R.color.black));
+        mRegularText.setColor(res.getColor(R.color.meterGauge));
         mRegularText.setTextSize(mRegularTextSize);
         mRegularText.setTextAlign(Paint.Align.CENTER);
         mRegularText.setTypeface(tf);
@@ -136,7 +136,7 @@ public class TimerView extends View {
 
         String valueString = hours+":"+minutes+":"+seconds;
 //        Log.v(TAG,valueString);
-        canvas.drawText(valueString,mDrawingRect.centerX(),mDrawingRect.centerY()*1.2f,mRegularText);
+        canvas.drawText(valueString,mDrawingRect.centerX(),mDrawingRect.centerY()*1.15f,mRegularText);
 
     }
 
