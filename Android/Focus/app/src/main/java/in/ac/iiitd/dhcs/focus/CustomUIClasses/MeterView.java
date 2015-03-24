@@ -9,8 +9,6 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.view.View;
 
-import java.text.SimpleDateFormat;
-
 import in.ac.iiitd.dhcs.focus.R;
 
 /**

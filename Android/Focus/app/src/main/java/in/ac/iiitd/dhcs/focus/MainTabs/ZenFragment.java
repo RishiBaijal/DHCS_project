@@ -3,12 +3,17 @@ package in.ac.iiitd.dhcs.focus.MainTabs;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TimePicker;
+import android.widget.ViewFlipper;
 
 import in.ac.iiitd.dhcs.focus.CustomUIClasses.TimerView;
 import in.ac.iiitd.dhcs.focus.R;
+import in.ac.iiitd.dhcs.focus.ZenTimer;
 
 
 /**
@@ -18,6 +23,11 @@ import in.ac.iiitd.dhcs.focus.R;
  */
 public class ZenFragment extends Fragment {
     TimerView timerView;
+    TimePicker timePicker;
+    Button startBtn,stopBtn;
+    ZenTimer zenTimer;
+    ViewFlipper viewFlipper;
+    private static long TICK=60;//milliseconds
     private final static String TAG="ZenFragment";
 
     // TODO: Rename parameter arguments, choose names that match
@@ -66,31 +76,49 @@ public class ZenFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View inflaterView=inflater.inflate(R.layout.fragment_zen, container, false);
+        viewFlipper=(ViewFlipper)inflaterView.findViewById(R.id.viewFlipper);
+
         timerView= (TimerView) inflaterView.findViewById(R.id.timerView);
         timerView.setProgress(50);
+
+        timePicker= (TimePicker) inflaterView.findViewById(R.id.timePicker);
+        timePicker.setIs24HourView(true);
+        timePicker.setCurrentHour(0);
+        timePicker.setCurrentMinute(0);
+
+        setButtons(inflaterView);
+
         return inflaterView;
     }
 
     @Override
     public void onResume(){
         super.onResume();
-//        final long totalTime=1*60*1000;//millisecond
-//        new CountDownTimer(totalTime, 60) {
-//            long minMillisLeft=totalTime;
-//            public void onTick(long millisUntilFinished) {
-////                Log.v(TAG,""+millisUntilFinished);
-//                if(millisUntilFinished<minMillisLeft)
-//                    minMillisLeft=millisUntilFinished;
-//                timerView.setProgress(((float)(totalTime-minMillisLeft)/(float)totalTime)*100);
-//                timerView.setProgressValue(totalTime-minMillisLeft);
-//            }
-//
-//            public void onFinish() {
-//
-//            }
-//        }
-//           .start();
     }
 
+    private void setButtons(View inflaterView) {
+        startBtn=(Button) inflaterView.findViewById(R.id.startBtn);
+        startBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                long setMillis=(((timePicker.getCurrentHour()*60+timePicker.getCurrentMinute())*60)*1000);
+                Log.v(TAG, "Set: " + setMillis);
+                viewFlipper.showNext();
+                zenTimer=new ZenTimer(setMillis,TICK,timerView,viewFlipper);
+                zenTimer.start();
+            }
+        });
+
+        stopBtn=(Button) inflaterView.findViewById(R.id.stopBtn);
+        stopBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                zenTimer.cancel();
+                viewFlipper.showNext();
+                timePicker.setCurrentHour(0);
+                timePicker.setCurrentMinute(0);
+            }
+        });
+    }
 
 }

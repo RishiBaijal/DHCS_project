@@ -17,9 +17,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
-import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import in.ac.iiitd.dhcs.focus.Common.CommonUtils;
 import in.ac.iiitd.dhcs.focus.CustomUIClasses.AppDistributionView;
@@ -96,6 +93,7 @@ public class ProductivityFragment extends Fragment {
                 updateList();
             }
         }, 700);
+
     }
 
     @Override
