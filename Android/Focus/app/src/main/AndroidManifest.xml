@@ -25,7 +25,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".OverlayActivity"
-            android:theme="@android:style/Theme.Holo.Dialog.NoActionBar"/>
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 
         <service android:name=".Service.FocusService"></service>
     </application>

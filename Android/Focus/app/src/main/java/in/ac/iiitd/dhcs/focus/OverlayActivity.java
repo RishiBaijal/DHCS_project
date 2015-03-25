@@ -15,5 +15,9 @@ public class OverlayActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.overlay_layout);
     }
+
+    public void nextOverlay(){
+        setContentView(R.layout.fragment_productivity);
+    }
 }
 

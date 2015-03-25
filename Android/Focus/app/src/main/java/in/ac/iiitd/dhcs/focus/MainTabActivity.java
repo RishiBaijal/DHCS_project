@@ -52,7 +52,6 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         mPreferences = getSharedPreferences(Utils.SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE);
        // mOverlayLayout=(RelativeLayout)findViewById(R.id.OverlayLayout);
         //check if this is the first run and show tutorial if so
-        checkPrefsAndShowOverlay();
 
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
@@ -65,6 +64,7 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.setCurrentItem(1);
 
         // When swiping between different sections, select the corresponding
         // tab. We can also use ActionBar.Tab#select() to do this if we have
@@ -84,17 +84,20 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
                             .setTabListener(this));
         }
 
-
-
-
-
        // ViewPager viewPager = (ViewPager) findViewById(R.id.overlayPager);
        // ImageAdapter adapter = new ImageAdapter(getApplicationContext());
        // viewPager.setAdapter(adapter);
 
         // showActivityOverlay();
+
+        checkPrefsAndShowOverlay();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mViewPager.setCurrentItem(1);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -189,7 +192,6 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
 // use a default value using new Date()
         Intent myIntent = new Intent(this, OverlayActivity.class);
 
-
         if(runFirst){
             startActivity(myIntent);
         }else {
@@ -197,4 +199,6 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         }
         mPreferences.edit().putBoolean(Utils.KEY_IS_FIRST_RUN,false).commit();
     }
+
+
 }
