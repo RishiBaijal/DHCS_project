@@ -3,9 +3,6 @@ package in.ac.iiitd.dhcs.focus;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,22 +12,14 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
 
-import in.ac.iiitd.dhcs.focus.Common.CommonUtils;
-import in.ac.iiitd.dhcs.focus.Database.DbContract;
-import in.ac.iiitd.dhcs.focus.Database.FocusDbHelper;
 import in.ac.iiitd.dhcs.focus.MainTabs.ProductivityFragment;
 import in.ac.iiitd.dhcs.focus.MainTabs.StatsFragment;
 import in.ac.iiitd.dhcs.focus.MainTabs.ZenFragment;
-import in.ac.iiitd.dhcs.focus.Objects.ProductivityObject;
 import in.ac.iiitd.dhcs.focus.Service.FocusService;
 import in.ac.iiitd.dhcs.focus.Service.ScreenStateReceiver;
 
@@ -116,6 +105,11 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }
+        else if (id == R.id.action_tracked_apps)
+        {
+            Intent intent = new Intent(this, TrackedAppsAcitivity.class);
+            this.startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
