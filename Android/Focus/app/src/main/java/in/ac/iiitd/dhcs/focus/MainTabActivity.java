@@ -2,7 +2,9 @@ package in.ac.iiitd.dhcs.focus;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -21,6 +23,8 @@ import java.util.Locale;
 import in.ac.iiitd.dhcs.focus.MainTabs.ProductivityFragment;
 import in.ac.iiitd.dhcs.focus.MainTabs.StatsFragment;
 import in.ac.iiitd.dhcs.focus.MainTabs.ZenFragment;
+import in.ac.iiitd.dhcs.focus.Service.FocusService;
+import in.ac.iiitd.dhcs.focus.Service.ScreenStateReceiver;
 
 
 public class MainTabActivity extends ActionBarActivity implements ActionBar.TabListener {
@@ -38,17 +42,19 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
     /**
      * The {@link ViewPager} that will host the section contents.
      */
+    private static String TAG ="MainTabActivity";
     ViewPager mViewPager;
     public SharedPreferences mPreferences;
     boolean showTut;
     Context mContext;
     RelativeLayout mOverlayLayout;
-
+    Context context;
+    private static ScreenStateReceiver mScreenStateReceiver;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_tab);
-
+        context = getApplicationContext();
         mPreferences = getSharedPreferences(Utils.SHARED_PREFERENCES_FILE, Context.MODE_PRIVATE);
        // mOverlayLayout=(RelativeLayout)findViewById(R.id.OverlayLayout);
         //check if this is the first run and show tutorial if so
@@ -89,7 +95,9 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
        // viewPager.setAdapter(adapter);
 
         // showActivityOverlay();
-
+        mScreenStateReceiver = new ScreenStateReceiver();
+        registerReceiver();
+        startFocusService();
         checkPrefsAndShowOverlay();
     }
 
@@ -200,5 +208,30 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         mPreferences.edit().putBoolean(Utils.KEY_IS_FIRST_RUN,false).commit();
     }
 
+    private void startFocusService(){
+        Intent intent = new Intent(context, FocusService.class);
+        startService(intent);
+        }
+    private void stopFocusService(){
+        Intent intent = new Intent(context, FocusService.class);
+        stopService(intent);
+        }
 
+    private void registerReceiver(){
+        IntentFilter screenStateFilter = new IntentFilter();
+        screenStateFilter.addAction(Intent.ACTION_SCREEN_ON);
+        screenStateFilter.addAction(Intent.ACTION_SCREEN_OFF);
+
+        if (Build.VERSION.SDK_INT >= 17) {
+            screenStateFilter.addAction(Intent.ACTION_DREAMING_STARTED);
+            screenStateFilter.addAction(Intent.ACTION_DREAMING_STOPPED);
+        }
+        registerReceiver(mScreenStateReceiver, screenStateFilter);
+    }
+
+    @Override
+    public void onBackPressed() {
+    // TODO Auto-generated method stub
+    moveTaskToBack(true);
+    }
 }

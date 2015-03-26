@@ -2,6 +2,7 @@ package in.ac.iiitd.dhcs.focus;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.View;
 
 import in.ac.iiitd.dhcs.focus.R;
 
@@ -16,7 +17,7 @@ public class OverlayActivity extends Activity {
         setContentView(R.layout.overlay_layout);
     }
 
-    public void nextOverlay(){
+    public void nextOverlay(View v){
         setContentView(R.layout.fragment_productivity);
     }
 }
