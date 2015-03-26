@@ -1,8 +1,6 @@
 package in.ac.iiitd.dhcs.focus.ListAdapters;
 
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -21,43 +19,31 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import in.ac.iiitd.dhcs.focus.Objects.TrackedAppObject;
+import in.ac.iiitd.dhcs.focus.Objects.UserAppObject;
 import in.ac.iiitd.dhcs.focus.R;
 
 /**
  * Created by Shubham on 23 Mar 15.
  */
-public class TrackedAppListAdapter extends ArrayAdapter<PackageInfo> {
+public class TrackedAppListAdapter extends ArrayAdapter<UserAppObject> {
 
     private static String TAG = "TrackedAppListAdapter";
 
-    private Context context;
     private PackageManager packageManager;
-    private List<PackageInfo> packageInfoList;
-    private ArrayList<PackageInfo> userPackageInfoList = new ArrayList<>();
+    private Context context;
+    private ArrayList<UserAppObject> userAppObjectList = new ArrayList<>();
     public static List<TrackedAppObject> trackedAppObjectlist = new CopyOnWriteArrayList<>();
-    private PackageInfo packageInfo;
+    private UserAppObject userAppObject = new UserAppObject();
 
     private float DEFAULT_PRODUCTIVITY_SCORE = (float) 5.0;
 
-    public TrackedAppListAdapter(Context context, int resource)
+    public TrackedAppListAdapter(Context context, int resource, ArrayList<UserAppObject> list)
     {
-        super(context, resource);
+        super(context, resource, list);
         this.context = context;
-        filterSystemPackage();
-    }
-
-    public void filterSystemPackage()
-    {
+        this.userAppObjectList = list;
         packageManager = context.getPackageManager();
-        packageInfoList = packageManager.getInstalledPackages(PackageManager.GET_META_DATA);
-        for(PackageInfo packageInfo1 : packageInfoList)
-        {
-            if(!(isSystemPackage(packageInfo1)))
-            {
-                userPackageInfoList.add(packageInfo1);
-                Log.d(TAG, packageManager.getApplicationLabel(packageInfo1.applicationInfo).toString());
-            }
-        }
+        Log.d(TAG,"userObjectListSize"+userAppObjectList.size());
     }
 
     public void addTrackedApp(String appName, float appProductivity)
@@ -79,69 +65,50 @@ public class TrackedAppListAdapter extends ArrayAdapter<PackageInfo> {
             if(objectToRemoved.getName().equals(appName))
                 wasDeleted = trackedAppObjectlist.remove(objectToRemoved);
         }
-//        for(int i=0; i<trackedAppObjectlist.size(); ++i)
-//        {
-//            TrackedAppObject objectToBeRemoved = trackedAppObjectlist.get(i);
-//            if(objectToBeRemoved.getName().equals(appName))
-//                wasDeleted = trackedAppObjectlist.remove(objectToBeRemoved);
-//        }
 
         Log.d(TAG,"list size:"+String.valueOf(trackedAppObjectlist.size()));
         Log.d(TAG,"wasDeleted:"+String.valueOf(wasDeleted));
     }
 
-    static class ViewHolder
-    {
-        ImageView imageViewAppIcon;
-        TextView textViewAppName;
-        CheckBox checkBoxTrack;
-        SeekBar seekBarProductivity;
-        TextView textViewSeekValue;
-    }
-
     @Override
     public int getCount() {
-        return userPackageInfoList.size();
+        return userAppObjectList.size();
     }
 
     @Override
-    public PackageInfo getItem(int position) {
-        return userPackageInfoList.get(position);
+    public UserAppObject getItem(int position) {
+        return userAppObjectList.get(position);
     }
 
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, final ViewGroup parent) {
         View view = convertView;
-        packageInfo = userPackageInfoList.get(position);
+        userAppObject = userAppObjectList.get(position);
 
-        if(view==null)
-        {
-            LayoutInflater inflater = (LayoutInflater) context
-                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.tracked_apps_list_item, parent, false);
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        view = inflater.inflate(R.layout.tracked_apps_list_item, parent, false);
 
-            final ViewHolder viewHolder = new ViewHolder();
-            viewHolder.textViewAppName = (TextView) view.findViewById(R.id.app_name_text);
-            viewHolder.imageViewAppIcon = (ImageView) view.findViewById(R.id.app_icon);
-            viewHolder.checkBoxTrack = (CheckBox) view.findViewById(R.id.app_tracking_check);
-            viewHolder.seekBarProductivity = (SeekBar) view.findViewById(R.id.app_value_seek);
-            viewHolder.textViewSeekValue = (TextView) view.findViewById(R.id.app_seek_value_text);
+        final TextView textViewAppName = (TextView) view.findViewById(R.id.app_name_text);
+        ImageView imageViewAppIcon = (ImageView) view.findViewById(R.id.app_icon);
+        final CheckBox checkBoxTrack = (CheckBox) view.findViewById(R.id.app_tracking_check);
+        final SeekBar seekBarProductivity = (SeekBar) view.findViewById(R.id.app_value_seek);
+        final TextView textViewSeekValue = (TextView) view.findViewById(R.id.app_seek_value_text);
 
-            view.setTag(viewHolder);
-        }
+        seekBarProductivity.setProgress(5);
+        textViewSeekValue.setText(String.valueOf(seekBarProductivity.getProgress()));
+        textViewAppName.setText(packageManager.getApplicationLabel(userAppObject.getPackageInfo().applicationInfo).toString());
+        imageViewAppIcon.setImageDrawable(packageManager.getApplicationIcon(userAppObject.getPackageInfo().applicationInfo));
+        checkBoxTrack.setChecked(userAppObject.getIsChecked()); //to be extracted from DB
 
-        final ViewHolder holder = (ViewHolder) view.getTag();
-
-        holder.seekBarProductivity.setProgress(5);
-        holder.textViewSeekValue.setText(String.valueOf(holder.seekBarProductivity.getProgress()));
-        holder.textViewAppName.setText(packageManager.getApplicationLabel(packageInfo.applicationInfo).toString());
-        holder.imageViewAppIcon.setImageDrawable(packageManager.getApplicationIcon(packageInfo.applicationInfo));
-
-        holder.checkBoxTrack.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        checkBoxTrack.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                String appName = holder.textViewAppName.getText().toString();
-                float appProductivity = (float) holder.seekBarProductivity.getProgress();
+                Log.d(TAG,"position:"+position);
+                userAppObjectList.get(position).setChecked(isChecked);
+                buttonView.setChecked(userAppObjectList.get(position).getIsChecked());
+                String appName = textViewAppName.getText().toString();
+                float appProductivity = (float) seekBarProductivity.getProgress();
                 if(isChecked)
                 {
                     addTrackedApp(appName, appProductivity);
@@ -153,11 +120,11 @@ public class TrackedAppListAdapter extends ArrayAdapter<PackageInfo> {
             }
         });
 
-        holder.seekBarProductivity.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        seekBarProductivity.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 //                    Log.d(TAG,String.valueOf(progress));
-                holder.textViewSeekValue.setText(String.valueOf(progress));
+                textViewSeekValue.setText(String.valueOf(progress));
 
             }
 
@@ -175,8 +142,5 @@ public class TrackedAppListAdapter extends ArrayAdapter<PackageInfo> {
         return view;
     }
 
-    private boolean isSystemPackage(PackageInfo pkgInfo) {
-        return ((pkgInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) ? true
-                : false;
-    }
+
 }

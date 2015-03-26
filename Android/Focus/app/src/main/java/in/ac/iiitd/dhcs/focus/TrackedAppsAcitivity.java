@@ -1,12 +1,20 @@
 package in.ac.iiitd.dhcs.focus;
 
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import in.ac.iiitd.dhcs.focus.ListAdapters.TrackedAppListAdapter;
+import in.ac.iiitd.dhcs.focus.Objects.UserAppObject;
 
 
 public class TrackedAppsAcitivity extends ActionBarActivity {
@@ -15,16 +23,42 @@ public class TrackedAppsAcitivity extends ActionBarActivity {
 
     private static TrackedAppListAdapter trackedAppsListAdapter;
     private static ListView listView;
+    private static PackageManager packageManager;
+    private static List<PackageInfo> packageInfoList;
+    private static ArrayList<UserAppObject> userPackageInfoList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracked_apps);
+        filterSystemPackage();
         listView = (ListView) findViewById(R.id.listView);
-        trackedAppsListAdapter = new TrackedAppListAdapter(TrackedAppsAcitivity.this,R.layout.tracked_apps_list_item);
+        trackedAppsListAdapter = new TrackedAppListAdapter(TrackedAppsAcitivity.this,R.layout.tracked_apps_list_item,userPackageInfoList);
         listView.setAdapter(trackedAppsListAdapter);
     }
 
+    public void filterSystemPackage()
+    {
+        packageManager = getPackageManager();
+        packageInfoList = packageManager.getInstalledPackages(PackageManager.GET_META_DATA);
+        for(int i = 0; i<packageInfoList.size(); ++i)
+        {
+            PackageInfo packageInfo1 = packageInfoList.get(i);
+            if(!(isSystemPackage(packageInfo1)))
+            {
+                UserAppObject userAppObject = new UserAppObject(packageInfo1,false);
+                Log.d(TAG, "check:"+packageManager.getApplicationLabel(userAppObject.getPackageInfo().applicationInfo).toString());
+                userPackageInfoList.add(userAppObject);
+//                Log.d(TAG, packageManager.getApplicationLabel(packageInfo1.applicationInfo).toString());
+            }
+        }
+//        Log.d(TAG,"userListSize:"+userPackageInfoList.size());
+    }
+
+    private boolean isSystemPackage(PackageInfo pkgInfo) {
+        return ((pkgInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) ? true
+                : false;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
