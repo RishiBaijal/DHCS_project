@@ -38,8 +38,8 @@ public class ProductivityFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    private static String TAG ="ProductivtyFragment";
-    public static ArrayList<ProductivityObject> ProductivityList ;
+    private static String TAG="ProductivityFragment";
+    public static ArrayList<ProductivityObject> ProductivityList;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -48,6 +48,7 @@ public class ProductivityFragment extends Fragment {
     MeterView productivityMeterView;
     private Context context;
     private ArrayList<AppDistributionView> appDistributionList = new ArrayList<AppDistributionView>();
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -73,7 +74,6 @@ public class ProductivityFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        context = getActivity();
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -102,7 +102,6 @@ public class ProductivityFragment extends Fragment {
         // Inflate the layout for this fragment
         View inflaterView=inflater.inflate(R.layout.fragment_productivity, container, false);
         productivityMeterView=(MeterView)inflaterView.findViewById(R.id.productivityMeterView);
-
         ll=(LinearLayout)inflaterView.findViewById(R.id.productivityLinearLayout);
 
         return inflaterView;
