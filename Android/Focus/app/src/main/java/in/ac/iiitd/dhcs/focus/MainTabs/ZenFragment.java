@@ -113,10 +113,14 @@ public class ZenFragment extends Fragment {
         stopBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                zenTimer.cancel();
-                viewFlipper.showNext();
-                timePicker.setCurrentHour(0);
-                timePicker.setCurrentMinute(0);
+                if(zenTimer!=null)
+                {
+                    zenTimer.cancel();
+                    viewFlipper.showNext();
+                    timePicker.setCurrentHour(0);
+                    timePicker.setCurrentMinute(0);
+                }
+
             }
         });
     }

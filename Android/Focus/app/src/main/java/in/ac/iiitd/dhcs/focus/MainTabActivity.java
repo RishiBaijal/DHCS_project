@@ -16,13 +16,15 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.RelativeLayout;
-
+import android.view.View;
+import android.view.LayoutInflater;
 
 import java.util.Locale;
 
 import in.ac.iiitd.dhcs.focus.MainTabs.ProductivityFragment;
 import in.ac.iiitd.dhcs.focus.MainTabs.StatsFragment;
 import in.ac.iiitd.dhcs.focus.MainTabs.ZenFragment;
+import in.ac.iiitd.dhcs.focus.Objects.TrackedAppObject;
 import in.ac.iiitd.dhcs.focus.Service.FocusService;
 import in.ac.iiitd.dhcs.focus.Service.ScreenStateReceiver;
 
@@ -204,14 +206,26 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         boolean runFirst=  !mPreferences.contains(Utils.KEY_IS_FIRST_RUN);
 // use a default value using new Date()
         Intent myIntent = new Intent(this, OverlayActivity.class);
+        Intent myIntentTrackedApp = new Intent(this, TrackedAppsAcitivity.class);
 
         if(runFirst){
-            startActivity(myIntent);
+//            startActivity(myIntent);
+            startActivity(myIntentTrackedApp);
+            View view = (View) findViewById(R.id.overlay_view);
+            view.bringToFront();
+            view.setVisibility(View.VISIBLE);
         }else {
 
         }
         mPreferences.edit().putBoolean(Utils.KEY_IS_FIRST_RUN,false).commit();
     }
+
+    public void nextOverlay(View v){
+//        setContentView(R.layout.fragment_productivity);
+        v = (View) findViewById(R.id.overlay_view);
+        v.setVisibility(View.GONE);
+    }
+
 
     private void startFocusService(){
         Intent intent = new Intent(context, FocusService.class);

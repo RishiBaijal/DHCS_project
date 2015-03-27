@@ -49,10 +49,8 @@ public class TrackedAppsAcitivity extends ActionBarActivity {
                 UserAppObject userAppObject = new UserAppObject(packageInfo1,false);
                 Log.d(TAG, "check:"+packageManager.getApplicationLabel(userAppObject.getPackageInfo().applicationInfo).toString());
                 userPackageInfoList.add(userAppObject);
-//                Log.d(TAG, packageManager.getApplicationLabel(packageInfo1.applicationInfo).toString());
             }
         }
-//        Log.d(TAG,"userListSize:"+userPackageInfoList.size());
     }
 
     private boolean isSystemPackage(PackageInfo pkgInfo) {
@@ -76,6 +74,11 @@ public class TrackedAppsAcitivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        }
+        else if (id == R.id.save_icon_traked_apps)
+        {
+            finish();
             return true;
         }
 
