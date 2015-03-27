@@ -25,12 +25,13 @@ public class TrackedAppsAcitivity extends ActionBarActivity {
     private static ListView listView;
     private static PackageManager packageManager;
     private static List<PackageInfo> packageInfoList;
-    private static ArrayList<UserAppObject> userPackageInfoList = new ArrayList<>();
+    private static ArrayList<UserAppObject> userPackageInfoList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracked_apps);
+        userPackageInfoList = new ArrayList<>();
         filterSystemPackage();
         listView = (ListView) findViewById(R.id.listView);
         trackedAppsListAdapter = new TrackedAppListAdapter(TrackedAppsAcitivity.this,R.layout.tracked_apps_list_item,userPackageInfoList);
