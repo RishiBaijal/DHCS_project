@@ -325,5 +325,8 @@ public class FocusService extends Service {
 	cursor.close();
 	CommonUtils.ProductivityScore =(long)(((float)CommonUtils.TotalProductivity/(float) CommonUtils.TotalDuration)*100);
     Log.v(TAG,CommonUtils.TotalProductivity +" "+  CommonUtils.TotalDuration +" "+100*((float)CommonUtils.TotalProductivity/(float) CommonUtils.TotalDuration));
-    }
+
+    db.close();
+  }
+
 }

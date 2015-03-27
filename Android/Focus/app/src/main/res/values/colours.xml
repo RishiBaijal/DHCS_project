@@ -8,4 +8,5 @@
     <color name="horizontalGauge">@color/primaryDark</color>
     <color name="target">#fff55000</color>
     <color name="accent">#fff5af00</color>
+    <color name="transparent">#00000000</color>
 </resources>
