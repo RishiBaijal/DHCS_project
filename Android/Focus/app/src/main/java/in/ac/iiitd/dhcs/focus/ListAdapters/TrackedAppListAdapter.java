@@ -65,9 +65,18 @@ public class TrackedAppListAdapter extends ArrayAdapter<UserAppObject> {
             if(objectToRemoved.getName().equals(appName))
                 wasDeleted = trackedAppObjectlist.remove(objectToRemoved);
         }
-
         Log.d(TAG,"list size:"+String.valueOf(trackedAppObjectlist.size()));
         Log.d(TAG,"wasDeleted:"+String.valueOf(wasDeleted));
+    }
+
+    public void updateProductivity(String appName, float productivityValue)
+    {
+        for(int i = 0; i<trackedAppObjectlist.size(); ++i)
+        {
+            TrackedAppObject objectToBeUpdated = trackedAppObjectlist.get(i);
+            if(objectToBeUpdated.getName().equals(appName))
+                objectToBeUpdated.putReading(productivityValue);
+        }
     }
 
     @Override
@@ -124,7 +133,14 @@ public class TrackedAppListAdapter extends ArrayAdapter<UserAppObject> {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 //                    Log.d(TAG,String.valueOf(progress));
+                boolean checkedValue = userAppObjectList.get(position).getIsChecked();
                 textViewSeekValue.setText(String.valueOf(progress));
+                if(checkedValue)
+                {
+                    float productivity = (float) progress;
+                    String appName = textViewAppName.getText().toString();
+                    updateProductivity(appName,productivity);
+                }
 
             }
 
