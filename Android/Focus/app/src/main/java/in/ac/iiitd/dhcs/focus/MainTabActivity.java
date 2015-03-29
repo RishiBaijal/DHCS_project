@@ -123,11 +123,7 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        else if (id == R.id.action_tracked_apps)
+        if (id == R.id.action_tracked_apps)
         {
             Intent intent = new Intent(this, TrackedAppsAcitivity.class);
             this.startActivity(intent);

@@ -15,7 +15,7 @@ public class ScreenStateReceiver extends BroadcastReceiver
 
  public ScreenStateReceiver()
  {
-	 
+
  }
 
  public void onReceive(Context context, Intent intent)
