@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import in.ac.iiitd.dhcs.focus.Common.CommonUtils;
 import in.ac.iiitd.dhcs.focus.Database.DbContract;
 import in.ac.iiitd.dhcs.focus.Database.FocusDbHelper;
 import in.ac.iiitd.dhcs.focus.Objects.TrackedAppObject;
@@ -84,7 +85,6 @@ public class TrackedAppListAdapter extends ArrayAdapter<UserAppObject> {
 
     public void updateProductivity(String appName, float productivityValue)
     {
-        //updateProductivityDB(appName,productivityValue);
         trackedapps.put(appName,productivityValue);
         for(int i = 0; i<trackedAppObjectlist.size(); ++i)
         {
@@ -106,6 +106,9 @@ public class TrackedAppListAdapter extends ArrayAdapter<UserAppObject> {
 
     @Override
     public View getView(final int position, View convertView, final ViewGroup parent) {
+        //getting already tracking apps list from db//
+        getList();
+
         View view = convertView;
         userAppObject = userAppObjectList.get(position);
 
@@ -119,11 +122,21 @@ public class TrackedAppListAdapter extends ArrayAdapter<UserAppObject> {
         final SeekBar seekBarProductivity = (SeekBar) view.findViewById(R.id.app_value_seek);
         final TextView textViewSeekValue = (TextView) view.findViewById(R.id.app_seek_value_text);
 
-        seekBarProductivity.setProgress(5);
+        String appName = packageManager.getApplicationLabel(userAppObject.getPackageInfo().applicationInfo).toString();
+        boolean istracked = trackedapps.containsKey(appName);
+
+        if(istracked){
+            checkBoxTrack.setChecked(true);
+            seekBarProductivity.setProgress(Math.round(trackedapps.get(appName)));
+        }
+        else{
+            checkBoxTrack.setChecked(false);
+            seekBarProductivity.setProgress(5);
+        }
+
         textViewSeekValue.setText(String.valueOf(seekBarProductivity.getProgress()));
-        textViewAppName.setText(packageManager.getApplicationLabel(userAppObject.getPackageInfo().applicationInfo).toString());
+        textViewAppName.setText(appName);
         imageViewAppIcon.setImageDrawable(packageManager.getApplicationIcon(userAppObject.getPackageInfo().applicationInfo));
-        checkBoxTrack.setChecked(userAppObject.getIsChecked()); //to be extracted from DB
 
         checkBoxTrack.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -186,7 +199,7 @@ public class TrackedAppListAdapter extends ArrayAdapter<UserAppObject> {
     public void removeApp(String AppName){
         SQLiteDatabase db = dbs.getWritableDatabase();
         String sql = "select " + DbContract.TrackedAppEntry._ID + " from '" + DbContract.TrackedAppEntry.TABLE_NAME + "'" +
-                " where " + DbContract.TrackedAppEntry.APP_NAME + " LIKE '" + AppName;
+                " where " + DbContract.TrackedAppEntry.APP_NAME + " LIKE '" + AppName + "'";
         Cursor cursor = db.rawQuery(sql, null);
         cursor.moveToFirst();
         String rowid = cursor.getString(cursor.getColumnIndex(DbContract.TrackedAppEntry._ID));
@@ -196,17 +209,24 @@ public class TrackedAppListAdapter extends ArrayAdapter<UserAppObject> {
         db.close(); // Closing database connection
     }
 
-    public void updateProductivityDB(String AppName,float Score){
+    public void getList(){
         SQLiteDatabase db = dbs.getWritableDatabase();
-        String sql = "select " + DbContract.TrackedAppEntry._ID + " from '" + DbContract.TrackedAppEntry.TABLE_NAME + "'" +
-                " where " + DbContract.TrackedAppEntry.APP_NAME + " LIKE '" + AppName;
+        String sql = "select * from '" + DbContract.TrackedAppEntry.TABLE_NAME + "'";
         Cursor cursor = db.rawQuery(sql, null);
         cursor.moveToFirst();
-        String rowid = cursor.getString(cursor.getColumnIndex(DbContract.TrackedAppEntry._ID));
 
-        ContentValues values = new ContentValues();
-        values.put(DbContract.TrackedAppEntry.PRODUCTIVITY_SCORE,Score);
-        db.update(DbContract.TrackedAppEntry.TABLE_NAME, values, DbContract.TrackedAppEntry._ID + "=" + rowid, null);
-        db.close();
+        if (cursor != null && cursor.getCount() > 0) {
+            cursor.moveToFirst();
+        }
+
+        trackedapps.clear();
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+        String appName = cursor.getString(cursor.getColumnIndex(DbContract.TrackedAppEntry.APP_NAME));
+        Float Score = cursor.getFloat(cursor.getColumnIndex(DbContract.TrackedAppEntry.PRODUCTIVITY_SCORE));
+        trackedapps.put(appName,Score);
+        }
+        cursor.close();
+        db.close(); // Closing database connection
     }
+
 }

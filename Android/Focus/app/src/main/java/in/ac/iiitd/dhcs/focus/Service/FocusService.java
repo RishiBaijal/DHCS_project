@@ -9,6 +9,7 @@ import java.util.TimerTask;
 
 import in.ac.iiitd.dhcs.focus.Common.CommonUtils;
 
+import in.ac.iiitd.dhcs.focus.Database.DbContract;
 import in.ac.iiitd.dhcs.focus.Database.DbContract.ProductivityEntry;
 import in.ac.iiitd.dhcs.focus.Database.FocusDbHelper;
 import in.ac.iiitd.dhcs.focus.ListAdapters.TrackedAppListAdapter;
@@ -62,11 +63,11 @@ public class FocusService extends Service {
         Log.d(TAG, "onCreate");
         context = getApplicationContext();
         isServiceRunning = false;
-
         currentapp = endtime = starttime = currentpack = null;
         duration = 0f;
         Productivityscore = 0.7f;
         dbs = new FocusDbHelper(context);
+        getList();
         a = (ActivityManager) context.getSystemService("activity");
         try {
             d = Class.forName(a.getClass().getName()).getField("PROCESS_STATE_TOP").getInt(a);
@@ -330,4 +331,24 @@ public class FocusService extends Service {
         db.close();
     }
 
+
+    public void getList(){
+        SQLiteDatabase db = dbs.getWritableDatabase();
+        String sql = "select * from '" + DbContract.TrackedAppEntry.TABLE_NAME + "'";
+        Cursor cursor = db.rawQuery(sql, null);
+        cursor.moveToFirst();
+
+        if (cursor != null && cursor.getCount() > 0) {
+            cursor.moveToFirst();
+        }
+
+        TrackedAppListAdapter.trackedapps.clear();
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            String appName = cursor.getString(cursor.getColumnIndex(DbContract.TrackedAppEntry.APP_NAME));
+            Float Score = cursor.getFloat(cursor.getColumnIndex(DbContract.TrackedAppEntry.PRODUCTIVITY_SCORE));
+            TrackedAppListAdapter.trackedapps.put(appName,Score);
+        }
+        cursor.close();
+        db.close(); // Closing database connection
+    }
 }
