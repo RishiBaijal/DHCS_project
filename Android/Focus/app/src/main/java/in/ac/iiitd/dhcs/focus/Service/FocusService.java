@@ -124,8 +124,8 @@ public class FocusService extends Service {
                     endtime = CommonUtils.unixTimestampToTime(timeInMillis);
                     duration = CommonUtils.getTimeDiff(starttime, endtime);
 
-                    /* Only update db if it is under trackable apps*/
-                    if(TrackedAppListAdapter.trackedapps.containsKey(currentapp)) {
+                    /* Only update db if it is under trackable apps & duration > 0*/
+                    if(TrackedAppListAdapter.trackedapps.containsKey(currentapp) && duration > 0.0f) {
                         float Score = TrackedAppListAdapter.trackedapps.get(currentapp);
                         long Productivityduration = (long) (Score * duration / 10.0f);
                         if (getcount(currentapp, CommonUtils.unixTimestampToDate(timeInMillis)) > 0) {
