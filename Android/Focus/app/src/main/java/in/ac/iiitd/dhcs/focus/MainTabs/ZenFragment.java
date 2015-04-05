@@ -1,7 +1,9 @@
 package in.ac.iiitd.dhcs.focus.MainTabs;
 
 
+import android.content.Context;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,9 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TimePicker;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import in.ac.iiitd.dhcs.focus.CustomUIClasses.TimerView;
+import in.ac.iiitd.dhcs.focus.MainTabActivity;
 import in.ac.iiitd.dhcs.focus.R;
 import in.ac.iiitd.dhcs.focus.ZenTimer;
 
@@ -91,6 +95,29 @@ public class ZenFragment extends Fragment {
         return inflaterView;
     }
 
+//    public void onPause()
+//    {
+//        super.onPause();
+//        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+//        boolean isScreenOn = powerManager.isScreenOn();
+//
+//        if (!isScreenOn)
+//        {
+//            System.out.println("The motherfucking screen is locked");
+//        }
+//        else
+//        {
+//            System.out.println("The brotherfucking screen is unlocked.");
+//            Context context = getApplicationContext();
+//            CharSequence text = "The screen is unlocked. You are getting distracted!";
+//            int duration = Toast.LENGTH_LONG;
+//
+//            Toast.makeText(context, text, duration).show();
+//        }
+//    }
+
+
+
     @Override
     public void onResume(){
         super.onResume();
@@ -101,11 +128,13 @@ public class ZenFragment extends Fragment {
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MainTabActivity.zenStarted = true;
                 long setMillis=(((timePicker.getCurrentHour()*60+timePicker.getCurrentMinute())*60)*1000);
                 Log.v(TAG, "Set: " + setMillis);
                 viewFlipper.showNext();
                 zenTimer=new ZenTimer(setMillis,TICK,timerView,viewFlipper);
                 zenTimer.start();
+
             }
         });
 
@@ -115,6 +144,7 @@ public class ZenFragment extends Fragment {
             public void onClick(View v) {
                 if(zenTimer!=null)
                 {
+                    MainTabActivity.zenStarted = false;
                     zenTimer.cancel();
                     viewFlipper.showNext();
                     timePicker.setCurrentHour(0);

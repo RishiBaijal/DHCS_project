@@ -6,6 +6,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -18,6 +19,7 @@ import android.view.MenuItem;
 import android.widget.RelativeLayout;
 import android.view.View;
 import android.view.LayoutInflater;
+import android.widget.Toast;
 
 import java.util.Locale;
 
@@ -44,6 +46,7 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
     /**
      * The {@link ViewPager} that will host the section contents.
      */
+    public static boolean zenStarted = false;
     private static String TAG ="MainTabActivity";
     ViewPager mViewPager;
     public SharedPreferences mPreferences;
@@ -102,6 +105,32 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         startFocusService();
         checkPrefsAndShowOverlay();
     }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        boolean isScreenOn = powerManager.isScreenOn();
+
+        if (!isScreenOn)
+        {
+            System.out.println("The screen is locked");
+        }
+        else
+        {
+            if (zenStarted == true) {
+                System.out.println("The value of zenStarted is "+zenStarted);
+                System.out.println("The screen is unlocked.");
+                Context context = getApplicationContext();
+                CharSequence text = "The screen is unlocked. You are getting distracted!";
+                int duration = Toast.LENGTH_LONG;
+
+                Toast.makeText(context, text, duration).show();
+            }
+        }
+    }
+
 
     @Override
     protected void onResume() {
