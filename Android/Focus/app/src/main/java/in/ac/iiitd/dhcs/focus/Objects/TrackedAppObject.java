@@ -15,14 +15,14 @@ public class TrackedAppObject {
     public String getName(){
         return appName;
     }
-    public Float getReading(){
+    public float getReading(){
         return productivityScore;
     }
 
     public void putName(String appName){
         this.appName=appName;
     }
-    public void putReading(Float productivityScore){
+    public void putReading(float productivityScore){
         this.productivityScore=productivityScore;
     }
 }
