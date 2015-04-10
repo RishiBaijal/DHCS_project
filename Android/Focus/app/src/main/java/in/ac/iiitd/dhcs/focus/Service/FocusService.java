@@ -13,8 +13,12 @@ import in.ac.iiitd.dhcs.focus.Database.DbContract;
 import in.ac.iiitd.dhcs.focus.Database.DbContract.ProductivityEntry;
 import in.ac.iiitd.dhcs.focus.Database.FocusDbHelper;
 import in.ac.iiitd.dhcs.focus.ListAdapters.TrackedAppListAdapter;
+import in.ac.iiitd.dhcs.focus.R;
 
 import android.app.ActivityManager;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.ContentValues;
@@ -29,8 +33,12 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
+
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat.Builder;
 
 public class FocusService extends Service {
 
@@ -51,6 +59,10 @@ public class FocusService extends Service {
     private ActivityManager a;
     private float Productivityscore;
     private boolean running = false;
+    private int notifyID = 1555;
+    static boolean counterflag = true ;
+    private static String currentday="";
+    NotificationManager mNotificationManager;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -113,7 +125,7 @@ public class FocusService extends Service {
 
                 String appname = (String) (appinfo != null ? pm.getApplicationLabel(appinfo) : "Unknown");
 
-                Log.v(TAG, "TrackedAppListSize = " + TrackedAppListAdapter.trackedapps.size() + " " + TrackedAppListAdapter.trackedapps.containsKey(currentapp));
+                //Log.v(TAG, "TrackedAppListSize = " + TrackedAppListAdapter.trackedapps.size() + " " + TrackedAppListAdapter.trackedapps.containsKey(currentapp));
                         /* Base case to check for 1st time when app is null */
                 if (currentapp == null) {
                     currentapp = appname;
@@ -329,6 +341,20 @@ public class FocusService extends Service {
         CommonUtils.ProductivityScore = (long) (((float) CommonUtils.TotalProductivity / (float) CommonUtils.TotalDuration) * 100);
         Log.v(TAG, CommonUtils.TotalProductivity + " " + CommonUtils.TotalDuration + " " + 100 * ((float) CommonUtils.TotalProductivity / (float) CommonUtils.TotalDuration));
 
+        if(!currentday.equalsIgnoreCase(CommonUtils.unixTimestampToDate(System.currentTimeMillis()))){
+        counterflag = true;
+        currentday = CommonUtils.unixTimestampToDate(System.currentTimeMillis());
+        }
+
+        Log.v(TAG,String.valueOf(CommonUtils.gettimeinhours(System.currentTimeMillis())));
+        //Fire notification once Score > Goal
+        if(CommonUtils.ProductivityScore>CommonUtils.ProductivityGoal &&
+                CommonUtils.gettimeinhours(System.currentTimeMillis())==23 &&
+                counterflag==true){
+            PushNotification();
+            counterflag = false;
+        }
+
         db.close();
     }
 
@@ -351,5 +377,32 @@ public class FocusService extends Service {
         }
         cursor.close();
         db.close(); // Closing database connection
+    }
+
+    public void PushNotification(){
+
+        int pid = android.os.Process.myPid();
+        Intent notiintent = new Intent(this, FocusService.class);
+
+        notiintent.setAction(Long.toString(System.currentTimeMillis()));
+        int requestID = (int) System.currentTimeMillis();
+        PendingIntent pIntent = PendingIntent.getService(this, requestID, notiintent,PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // Sets an ID for the notification, so it can be updated
+        mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        Builder mNotifyBuilder = new NotificationCompat.Builder(this)
+                .setContentTitle("Focus")
+                .setContentIntent(pIntent)
+                .setOngoing(false);
+
+        mNotifyBuilder.setSmallIcon(R.mipmap.ic_notification);
+
+        mNotifyBuilder.setContentText("Good Job! Your day has been productive");
+
+        Notification temp = mNotifyBuilder.build();
+
+        temp.defaults |= Notification.DEFAULT_VIBRATE;
+        mNotificationManager.notify(notifyID,temp);
     }
 }

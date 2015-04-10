@@ -9,6 +9,9 @@ import android.util.Log;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import in.ac.iiitd.dhcs.focus.Objects.ProductivityObject;
@@ -49,5 +52,11 @@ public class CommonUtils {
 		}
         
         return (float)((date2.getTime() - date1.getTime()));
+    }
+
+    public static int gettimeinhours(long t){
+        Calendar c = new GregorianCalendar();
+        c.setTime(new Date(t));
+        return c.get(Calendar.HOUR_OF_DAY);
     }
 }
