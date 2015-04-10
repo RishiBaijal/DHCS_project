@@ -20,8 +20,10 @@ import android.widget.LinearLayout;
 
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
+import org.achartengine.chart.BarChart;
 import org.achartengine.model.TimeSeries;
 import org.achartengine.model.XYMultipleSeriesDataset;
+import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
 
@@ -122,16 +124,59 @@ public class StatsFragment extends Fragment {
         weekTimeList=StatsFetcher.getWeeklyTime(getActivity(), "");
         weekPercentList=StatsFetcher.getWeeklyPercent(getActivity(),"");
 
-        openTimeChart();
+        openDurationChart();
+        openWeeklyDurationChart();
     }
 
-    private void openTimeChart(){
-        XYSeriesRenderer prodSeriesRenderer=setupTimeSeriesRenderer(getResources().getColor(R.color.primary)
+    private void openWeeklyDurationChart(){
+        XYSeriesRenderer prodSeriesRenderer=setupSeriesRenderer(getResources().getColor(R.color.primary)
                 , getResources().getColor(R.color.productive_fill));
-        XYSeriesRenderer useSeriesRenderer=setupTimeSeriesRenderer(getResources().getColor(R.color.accent)
+        XYSeriesRenderer useSeriesRenderer=setupSeriesRenderer(getResources().getColor(R.color.accent)
                 ,getResources().getColor(R.color.usage_fill));
 
-        XYMultipleSeriesRenderer mRenderer=setupTimeMultipleRenderer("Days","Time (hrs)","Phone Usage (duration)");
+        XYMultipleSeriesRenderer mRenderer=setupMultipleRenderer("Days","Time (hrs)","Day-of-Week Usage (duration)");
+
+        mRenderer.setBarSpacing((int)(2 * density));
+        mRenderer.setXLabels(0);
+        mRenderer.setZoomEnabled(false);
+        mRenderer.setPanEnabled(false,false);
+        mRenderer.setClickEnabled(false);
+        mRenderer.setInScroll(false);
+        mRenderer.setZoomButtonsVisible(false);
+
+        mRenderer.addSeriesRenderer(0,useSeriesRenderer);
+        mRenderer.addSeriesRenderer(1,prodSeriesRenderer);
+
+        XYSeries prodBarSeries=new XYSeries("Productive");
+        XYSeries useBarSeries=new XYSeries("Total");
+
+        for(int i=1;i<weekTimeList.length;i++){
+            WeeklyTimeStatObject wtso=weekTimeList[i];
+            double pDur=((((float)wtso.getProdDur()/1000f)/60f)/60f);
+            prodBarSeries.add(i, pDur);
+            double uDur=((((float)wtso.getUseDur()/1000f)/60f)/60f);
+            useBarSeries.add(i,uDur);
+        }
+
+        for(int i=1; i< weekTimeList.length;i++){
+            WeeklyTimeStatObject wtso=weekTimeList[i];
+            mRenderer.addXTextLabel(i, wtso.getday());
+        }
+
+        final XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
+        dataset.addSeries(0,useBarSeries);
+        dataset.addSeries(1,prodBarSeries);
+
+        drawBarChart(useBarSeries, dataset, mRenderer, R.id.durationBarChart);
+    }
+
+    private void openDurationChart(){
+        XYSeriesRenderer prodSeriesRenderer=setupSeriesRenderer(getResources().getColor(R.color.primary)
+                , getResources().getColor(R.color.productive_fill));
+        XYSeriesRenderer useSeriesRenderer=setupSeriesRenderer(getResources().getColor(R.color.accent)
+                , getResources().getColor(R.color.usage_fill));
+
+        XYMultipleSeriesRenderer mRenderer=setupMultipleRenderer("Days", "Time (hrs)", "All-Time Usage (duration)");
 
         mRenderer.addSeriesRenderer(0,useSeriesRenderer);
         mRenderer.addSeriesRenderer(1,prodSeriesRenderer);
@@ -154,10 +199,10 @@ public class StatsFragment extends Fragment {
         dataset.addSeries(0,useTimeSeries);
         dataset.addSeries(1,prodTimeSeries);
 
-        drawChart(useTimeSeries,dataset,mRenderer);
+        drawTimeChart(useTimeSeries, dataset, mRenderer, R.id.durationChart);
     }
 
-    public XYSeriesRenderer setupTimeSeriesRenderer(int colour,int colourFill){
+    public XYSeriesRenderer setupSeriesRenderer(int colour,int colourFill){
         XYSeriesRenderer renderer = new XYSeriesRenderer();
         renderer.setLineWidth((int)(2 * density));
         renderer.setColor(colour);
@@ -173,7 +218,7 @@ public class StatsFragment extends Fragment {
         return renderer;
     }
 
-    public XYMultipleSeriesRenderer setupTimeMultipleRenderer(String xTitle,String yTitle,String chartTitle){
+    public XYMultipleSeriesRenderer setupMultipleRenderer(String xTitle,String yTitle,String chartTitle){
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         float val = 15 * density;
 
@@ -207,7 +252,7 @@ public class StatsFragment extends Fragment {
         return mRenderer;
     }
 
-    public void drawChart(TimeSeries mSeries,XYMultipleSeriesDataset dataset,XYMultipleSeriesRenderer mRenderer){
+    public void drawTimeChart(TimeSeries mSeries,XYMultipleSeriesDataset dataset,XYMultipleSeriesRenderer mRenderer,int id){
         int marginY=1;
         mRenderer.setYAxisMax(mSeries.getMaxY()+marginY);
 
@@ -249,7 +294,53 @@ public class StatsFragment extends Fragment {
 
         });
 
-        LinearLayout chart_container=(LinearLayout)rootView.findViewById(R.id.durationChart);
+        LinearLayout chart_container=(LinearLayout)rootView.findViewById(id);
+        chart_container.addView(chartView,0);
+    }
+
+    public void drawBarChart(XYSeries mSeries,XYMultipleSeriesDataset dataset,XYMultipleSeriesRenderer mRenderer,int id){
+        int marginY=1;
+        mRenderer.setYAxisMax(mSeries.getMaxY()+marginY);
+
+        final GraphicalView chartView = ChartFactory.getBarChartView(context, dataset, mRenderer, BarChart.Type.DEFAULT);
+
+        chartView.setOnTouchListener(new View.OnTouchListener() {
+            ViewPager mViewPager= MainTabActivity.mViewPager;
+            @SuppressLint("WrongViewCast")
+            ViewParent mParent= (ViewParent)rootView.findViewById(R.id.durationChart);
+
+            float mFirstTouchX,mFirstTouchY;
+
+            @Override
+            public boolean onTouch(View arg0, MotionEvent event) {
+
+                // save the position of the first touch so we can determine whether the user is dragging
+                // left or right
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    mFirstTouchX = event.getX();
+                    mFirstTouchY = event.getY();
+                }
+
+
+                if (event.getPointerCount() > 1
+                        || (event.getX() < mFirstTouchX)
+                        || (event.getX() > mFirstTouchX)
+                        || (event.getY() < mFirstTouchY)
+                        || (event.getY() > mFirstTouchY)) {
+                    mViewPager.requestDisallowInterceptTouchEvent(true);
+                    mParent.requestDisallowInterceptTouchEvent(true);
+                }
+                else {
+                    mViewPager.requestDisallowInterceptTouchEvent(false);
+                    mParent.requestDisallowInterceptTouchEvent(true);
+                }
+                // TODO Auto-generated method stub
+                return false;
+            }
+
+        });
+
+        LinearLayout chart_container=(LinearLayout)rootView.findViewById(id);
         chart_container.addView(chartView,0);
     }
 
