@@ -11,8 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.github.amlcurran.showcaseview.ShowcaseView;
-
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
 import org.achartengine.chart.PointStyle;
@@ -24,6 +22,7 @@ import org.achartengine.renderer.XYSeriesRenderer;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import in.ac.iiitd.dhcs.focus.Database.StatsFetcher;
 import in.ac.iiitd.dhcs.focus.R;
 
 /**
@@ -88,6 +87,7 @@ public class StatsFragment extends Fragment {
         mView = inflater.inflate(R.layout.fragment_stats, container, false);
         //openPieChart();
         //openScatterChart();
+        StatsFetcher.getProductiveTime(getActivity(),"");
         openTimeChart();
         return mView;
     }
@@ -155,15 +155,5 @@ public class StatsFragment extends Fragment {
         ChartView = (GraphicalView) ChartFactory.getTimeChartView(getActivity().getApplicationContext(), dataset, multiRenderer,"dd-MMM-yyyy");
         chartContainer.addView(ChartView);
     }
-
-
-
-
-
-
-
-
-
-
 
 }
