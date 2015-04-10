@@ -126,6 +126,8 @@ public class StatsFragment extends Fragment {
 
         openDurationChart();
         openWeeklyDurationChart();
+        openPercentChart();
+        openWeeklyPercentChart();
     }
 
     private void openWeeklyDurationChart(){
@@ -147,6 +149,7 @@ public class StatsFragment extends Fragment {
         mRenderer.addSeriesRenderer(0,useSeriesRenderer);
         mRenderer.addSeriesRenderer(1,prodSeriesRenderer);
 
+
         XYSeries prodBarSeries=new XYSeries("Productive");
         XYSeries useBarSeries=new XYSeries("Total");
 
@@ -167,7 +170,48 @@ public class StatsFragment extends Fragment {
         dataset.addSeries(0,useBarSeries);
         dataset.addSeries(1,prodBarSeries);
 
-        drawBarChart(useBarSeries, dataset, mRenderer, R.id.durationBarChart);
+
+        int marginY=1;
+        mRenderer.setYAxisMax(useBarSeries.getMaxY()+marginY);
+
+        drawBarChart(dataset, mRenderer, R.id.durationBarChart);
+    }
+
+    private void openWeeklyPercentChart(){
+        XYSeriesRenderer prodSeriesRenderer=setupSeriesRenderer(getResources().getColor(R.color.primary)
+                , getResources().getColor(R.color.productive_fill));
+
+        XYMultipleSeriesRenderer mRenderer=setupMultipleRenderer("Days","Percentage (%)","Day-of-Week Usage (percentage)");
+
+        mRenderer.setBarSpacing((int)(2 * density));
+        mRenderer.setXLabels(0);
+        mRenderer.setZoomEnabled(false);
+        mRenderer.setPanEnabled(false,false);
+        mRenderer.setClickEnabled(false);
+        mRenderer.setInScroll(false);
+        mRenderer.setZoomButtonsVisible(false);
+
+        mRenderer.addSeriesRenderer(0,prodSeriesRenderer);
+        int marginY=1;
+        mRenderer.setYAxisMax(100);
+
+        XYSeries prodBarSeries=new XYSeries("Productive");
+
+        for(int i=1;i<weekPercentList.length;i++){
+            WeeklyPercentStatObject wpso=weekPercentList[i];
+            double pPer=wpso.getProdPercent();
+            prodBarSeries.add(i, pPer);
+        }
+
+        for(int i=1; i< weekTimeList.length;i++){
+            WeeklyTimeStatObject wtso=weekTimeList[i];
+            mRenderer.addXTextLabel(i, wtso.getday());
+        }
+
+        final XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
+        dataset.addSeries(0,prodBarSeries);
+
+        drawBarChart(dataset, mRenderer, R.id.percentBarChart);
     }
 
     private void openDurationChart(){
@@ -199,7 +243,36 @@ public class StatsFragment extends Fragment {
         dataset.addSeries(0,useTimeSeries);
         dataset.addSeries(1,prodTimeSeries);
 
-        drawTimeChart(useTimeSeries, dataset, mRenderer, R.id.durationChart);
+        int marginY=1;
+        mRenderer.setYAxisMax(useTimeSeries.getMaxY()+marginY);
+
+        drawTimeChart(dataset, mRenderer, R.id.durationChart);
+    }
+
+    private void openPercentChart(){
+        XYSeriesRenderer prodSeriesRenderer=setupSeriesRenderer(getResources().getColor(R.color.primary)
+                , getResources().getColor(R.color.productive_fill));
+
+        XYMultipleSeriesRenderer mRenderer=setupMultipleRenderer("Days", "Percentage (%)", "All-Time Usage (percentage)");
+
+        mRenderer.addSeriesRenderer(0,prodSeriesRenderer);
+
+        mRenderer.setYAxisMax(100);
+
+        TimeSeries prodTimeSeries=new TimeSeries("Productive");
+
+        for(ProductivePercentStatObject ppso:statPercentList){
+            double pPer=ppso.getProdPercent();
+//            Log.v(TAG,pDur+" "+ptso.getDate());
+            prodTimeSeries.add(new Date(ppso.getDate()), pPer);
+//            prodTimeSeries.add(new Date(ptso.getDate()+(24*60*60*1000)), pDur);
+        }
+
+        final XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
+        dataset.addSeries(0,prodTimeSeries);
+
+
+        drawTimeChart(dataset, mRenderer, R.id.percentChart);
     }
 
     public XYSeriesRenderer setupSeriesRenderer(int colour,int colourFill){
@@ -252,9 +325,7 @@ public class StatsFragment extends Fragment {
         return mRenderer;
     }
 
-    public void drawTimeChart(TimeSeries mSeries,XYMultipleSeriesDataset dataset,XYMultipleSeriesRenderer mRenderer,int id){
-        int marginY=1;
-        mRenderer.setYAxisMax(mSeries.getMaxY()+marginY);
+    public void drawTimeChart(XYMultipleSeriesDataset dataset,XYMultipleSeriesRenderer mRenderer,int id){
 
         final GraphicalView chartView = ChartFactory.getTimeChartView(context, dataset, mRenderer, "Duration All-Time");
 
@@ -298,47 +369,8 @@ public class StatsFragment extends Fragment {
         chart_container.addView(chartView,0);
     }
 
-    public void drawBarChart(XYSeries mSeries,XYMultipleSeriesDataset dataset,XYMultipleSeriesRenderer mRenderer,int id){
-        int marginY=1;
-        mRenderer.setYAxisMax(mSeries.getMaxY()+marginY);
-
+    public void drawBarChart(XYMultipleSeriesDataset dataset,XYMultipleSeriesRenderer mRenderer,int id){
         final GraphicalView chartView = ChartFactory.getBarChartView(context, dataset, mRenderer, BarChart.Type.DEFAULT);
-
-        chartView.setOnTouchListener(new View.OnTouchListener() {
-            ViewPager mViewPager= MainTabActivity.mViewPager;
-            @SuppressLint("WrongViewCast")
-            ViewParent mParent= (ViewParent)rootView.findViewById(R.id.durationChart);
-
-            float mFirstTouchX,mFirstTouchY;
-
-            @Override
-            public boolean onTouch(View arg0, MotionEvent event) {
-
-                // save the position of the first touch so we can determine whether the user is dragging
-                // left or right
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    mFirstTouchX = event.getX();
-                    mFirstTouchY = event.getY();
-                }
-
-
-                if (event.getPointerCount() > 1
-                        || (event.getX() < mFirstTouchX)
-                        || (event.getX() > mFirstTouchX)
-                        || (event.getY() < mFirstTouchY)
-                        || (event.getY() > mFirstTouchY)) {
-                    mViewPager.requestDisallowInterceptTouchEvent(true);
-                    mParent.requestDisallowInterceptTouchEvent(true);
-                }
-                else {
-                    mViewPager.requestDisallowInterceptTouchEvent(false);
-                    mParent.requestDisallowInterceptTouchEvent(true);
-                }
-                // TODO Auto-generated method stub
-                return false;
-            }
-
-        });
 
         LinearLayout chart_container=(LinearLayout)rootView.findViewById(id);
         chart_container.addView(chartView,0);
