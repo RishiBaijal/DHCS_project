@@ -104,8 +104,8 @@ public class StatsFetcher {
         }
 
         for(ProductiveTimeStatObject ptso:timeList) {
-            Calendar cal=Calendar.getInstance();
-            cal.setTimeInMillis(ptso.getDate());
+            Calendar cal=new GregorianCalendar();
+            cal.setTime(new Date(ptso.getDate()));
             int day=cal.get(Calendar.DAY_OF_WEEK);
 
             prod_dur[day]+=ptso.getProdDur();
