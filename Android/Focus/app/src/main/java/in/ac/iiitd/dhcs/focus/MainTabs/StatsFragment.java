@@ -10,7 +10,6 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -140,11 +139,6 @@ public class StatsFragment extends Fragment {
 
         mRenderer.setBarSpacing((int)(2 * density));
         mRenderer.setXLabels(0);
-        mRenderer.setZoomEnabled(false);
-        mRenderer.setPanEnabled(false,false);
-        mRenderer.setClickEnabled(false);
-        mRenderer.setInScroll(false);
-        mRenderer.setZoomButtonsVisible(false);
 
         mRenderer.addSeriesRenderer(0,useSeriesRenderer);
         mRenderer.addSeriesRenderer(1,prodSeriesRenderer);
@@ -173,6 +167,12 @@ public class StatsFragment extends Fragment {
 
         int marginY=1;
         mRenderer.setYAxisMax(useBarSeries.getMaxY()+marginY);
+        mRenderer.setYAxisMin(0);
+        mRenderer.setXAxisMax(8);
+        mRenderer.setXAxisMin(0);
+
+        mRenderer.setPanLimits(new double[] {0,8,
+                (double)0,useBarSeries.getMaxY()+marginY});
 
         drawBarChart(dataset, mRenderer, R.id.durationBarChart);
     }
@@ -185,15 +185,11 @@ public class StatsFragment extends Fragment {
 
         mRenderer.setBarSpacing((int)(2 * density));
         mRenderer.setXLabels(0);
-        mRenderer.setZoomEnabled(false);
-        mRenderer.setPanEnabled(false,false);
-        mRenderer.setClickEnabled(false);
-        mRenderer.setInScroll(false);
-        mRenderer.setZoomButtonsVisible(false);
 
         mRenderer.addSeriesRenderer(0,prodSeriesRenderer);
         int marginY=1;
         mRenderer.setYAxisMax(100);
+        mRenderer.setYAxisMin(0);
 
         XYSeries prodBarSeries=new XYSeries("Productive");
 
@@ -210,6 +206,12 @@ public class StatsFragment extends Fragment {
 
         final XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
         dataset.addSeries(0,prodBarSeries);
+
+        mRenderer.setXAxisMax(8);
+        mRenderer.setXAxisMin(0);
+
+        mRenderer.setPanLimits(new double[] {0,8,
+                (double)0,100});
 
         drawBarChart(dataset, mRenderer, R.id.percentBarChart);
     }
@@ -232,11 +234,11 @@ public class StatsFragment extends Fragment {
             double pDur=((((float)ptso.getProdDur()/1000f)/60f)/60f);
 //            Log.v(TAG,pDur+" "+ptso.getDate());
             prodTimeSeries.add(new Date(ptso.getDate()), pDur);
-//            prodTimeSeries.add(new Date(ptso.getDate()+(24*60*60*1000)), pDur);
+            prodTimeSeries.add(new Date(ptso.getDate()+(24*60*60*1000)), pDur);
             double uDur=((((float)ptso.getUseDur()/1000f)/60f)/60f);
 //            Log.v(TAG,uDur+" "+ptso.getDate());
             useTimeSeries.add(new Date(ptso.getDate()),uDur);
-//            useTimeSeries.add(new Date(ptso.getDate()+(24*60*60*1000)), uDur);
+            useTimeSeries.add(new Date(ptso.getDate()+(24*60*60*1000)), uDur);
         }
 
         final XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
@@ -245,6 +247,14 @@ public class StatsFragment extends Fragment {
 
         int marginY=1;
         mRenderer.setYAxisMax(useTimeSeries.getMaxY()+marginY);
+        mRenderer.setYAxisMin(0);
+        mRenderer.setXAxisMax(prodTimeSeries.getMaxX());
+        mRenderer.setXAxisMin(prodTimeSeries.getMinX());
+
+
+        mRenderer.setPanLimits(new double[] {useTimeSeries.getMinX(),useTimeSeries.getMaxX(),
+                (double)0,useTimeSeries.getMaxY()+marginY});
+
 
         drawTimeChart(dataset, mRenderer, R.id.durationChart);
     }
@@ -258,6 +268,7 @@ public class StatsFragment extends Fragment {
         mRenderer.addSeriesRenderer(0,prodSeriesRenderer);
 
         mRenderer.setYAxisMax(100);
+        mRenderer.setYAxisMin(0);
 
         TimeSeries prodTimeSeries=new TimeSeries("Productive");
 
@@ -265,12 +276,17 @@ public class StatsFragment extends Fragment {
             double pPer=ppso.getProdPercent();
 //            Log.v(TAG,pDur+" "+ptso.getDate());
             prodTimeSeries.add(new Date(ppso.getDate()), pPer);
-//            prodTimeSeries.add(new Date(ptso.getDate()+(24*60*60*1000)), pDur);
+            prodTimeSeries.add(new Date(ppso.getDate()+(24*60*60*1000)), pPer);
         }
 
         final XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
         dataset.addSeries(0,prodTimeSeries);
 
+        mRenderer.setXAxisMax(prodTimeSeries.getMaxX());
+        mRenderer.setXAxisMin(prodTimeSeries.getMinX());
+
+        mRenderer.setPanLimits(new double[] {prodTimeSeries.getMinX(),prodTimeSeries.getMaxX(),
+                (double)0,100});
 
         drawTimeChart(dataset, mRenderer, R.id.percentChart);
     }
@@ -292,7 +308,6 @@ public class StatsFragment extends Fragment {
     }
 
     public XYMultipleSeriesRenderer setupMultipleRenderer(String xTitle,String yTitle,String chartTitle){
-        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         float val = 15 * density;
 
         XYMultipleSeriesRenderer mRenderer = new XYMultipleSeriesRenderer();
@@ -303,26 +318,27 @@ public class StatsFragment extends Fragment {
         mRenderer.setXLabelsAlign(Paint.Align.RIGHT);
         mRenderer.setXLabelsAngle(-45);
 
-        mRenderer.setZoomEnabled(true);
-        mRenderer.setPanEnabled(true,true);
-        mRenderer.setClickEnabled(true);
-        mRenderer.setInScroll(true);
+//        mRenderer.setZoomEnabled(true);
+//        mRenderer.setPanEnabled(true,true);
+//        mRenderer.setClickEnabled(true);
+//        mRenderer.setInScroll(true);
 
         mRenderer.setZoomButtonsVisible(true);
+
         mRenderer.setYAxisMin(0);
         mRenderer.setChartTitleTextSize(val);
         mRenderer.setLabelsTextSize((float) (val*0.75));
         mRenderer.setLegendTextSize((float) (val*0.75));
         mRenderer.setAxisTitleTextSize((float) (val*0.75));
-        mRenderer.setLabelsColor(context.getResources().getColor(R.color.graph_text));
-        mRenderer.setYLabelsColor(0, context.getResources().getColor(R.color.graph_text));
-        mRenderer.setXLabelsColor(context.getResources().getColor(R.color.graph_text));
+        mRenderer.setLabelsColor(getResources().getColor(R.color.graph_text));
+        mRenderer.setYLabelsColor(0, getResources().getColor(R.color.graph_text));
+        mRenderer.setXLabelsColor(getResources().getColor(R.color.graph_text));
         mRenderer.setYTitle(yTitle);
         mRenderer.setXTitle("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n "+xTitle);
         mRenderer.setYLabelsAlign(Paint.Align.RIGHT);
         mRenderer.setChartTitle(chartTitle);
         mRenderer.setShowGrid(true);
-        int[] margins={(int)(20 * density),(int)(40 * density),(int)(25 * density),0};
+        int[] margins={(int)(20 * density),(int)(40 * density),(int)(80 * density),0};
         mRenderer.setMargins(margins);
 
         return mRenderer;
@@ -375,8 +391,45 @@ public class StatsFragment extends Fragment {
     public void drawBarChart(XYMultipleSeriesDataset dataset,XYMultipleSeriesRenderer mRenderer,int id){
         final GraphicalView chartView = ChartFactory.getBarChartView(context, dataset, mRenderer, BarChart.Type.DEFAULT);
 
+        chartView.setOnTouchListener(new View.OnTouchListener() {
+            ViewPager mViewPager= MainTabActivity.mViewPager;
+            @SuppressLint("WrongViewCast")
+            ViewParent mParent= (ViewParent)rootView.findViewById(R.id.durationChart);
+
+            float mFirstTouchX,mFirstTouchY;
+
+            @Override
+            public boolean onTouch(View arg0, MotionEvent event) {
+
+                // save the position of the first touch so we can determine whether the user is dragging
+                // left or right
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    mFirstTouchX = event.getX();
+                    mFirstTouchY = event.getY();
+                }
+
+
+                if (event.getPointerCount() > 1
+                        || (event.getX() < mFirstTouchX)
+                        || (event.getX() > mFirstTouchX)
+                        || (event.getY() < mFirstTouchY)
+                        || (event.getY() > mFirstTouchY)) {
+                    mViewPager.requestDisallowInterceptTouchEvent(true);
+                    mParent.requestDisallowInterceptTouchEvent(true);
+                }
+                else {
+                    mViewPager.requestDisallowInterceptTouchEvent(false);
+                    mParent.requestDisallowInterceptTouchEvent(true);
+                }
+                // TODO Auto-generated method stub
+                return false;
+            }
+
+        });
+
         LinearLayout chart_container=(LinearLayout)rootView.findViewById(id);
         chart_container.addView(chartView,0);
     }
+
 
 }
