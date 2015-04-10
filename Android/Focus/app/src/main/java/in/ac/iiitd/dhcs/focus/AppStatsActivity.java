@@ -1,18 +1,13 @@
 package in.ac.iiitd.dhcs.focus;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewParent;
 import android.widget.LinearLayout;
 
 import org.achartengine.ChartFactory;
@@ -261,12 +256,12 @@ public class AppStatsActivity extends ActionBarActivity {
         mRenderer.setXLabelsAlign(Paint.Align.RIGHT);
         mRenderer.setXLabelsAngle(-45);
 
-//        mRenderer.setZoomEnabled(true);
-//        mRenderer.setPanEnabled(true,true);
-//        mRenderer.setClickEnabled(true);
-//        mRenderer.setInScroll(true);
+        mRenderer.setZoomEnabled(false,false);
+        mRenderer.setPanEnabled(false,false);
+//        mRenderer.setClickEnabled(false);
+//        mRenderer.setInScroll(false);
 
-        mRenderer.setZoomButtonsVisible(true);
+        mRenderer.setZoomButtonsVisible(false);
         mRenderer.setYAxisMin(0);
         mRenderer.setChartTitleTextSize(val);
         mRenderer.setLabelsTextSize((float) (val*0.75));
@@ -280,7 +275,7 @@ public class AppStatsActivity extends ActionBarActivity {
         mRenderer.setYLabelsAlign(Paint.Align.RIGHT);
         mRenderer.setChartTitle(chartTitle);
         mRenderer.setShowGrid(true);
-        int[] margins={(int)(20 * density),(int)(40 * density),(int)(80 * density),0};
+        int[] margins={(int)(40 * density),(int)(40 * density),(int)(60 * density),(int)(10 * density)};
         mRenderer.setMargins(margins);
 
         return mRenderer;
@@ -290,41 +285,41 @@ public class AppStatsActivity extends ActionBarActivity {
 
         final GraphicalView chartView = ChartFactory.getTimeChartView(this, dataset, mRenderer, "Duration All-Time");
 
-        chartView.setOnTouchListener(new View.OnTouchListener() {
-            ViewPager mViewPager= MainTabActivity.mViewPager;
-            @SuppressLint("WrongViewCast")
-            ViewParent mParent= (ViewParent)findViewById(R.id.durationChart);
-
-            float mFirstTouchX,mFirstTouchY;
-
-            @Override
-            public boolean onTouch(View arg0, MotionEvent event) {
-
-                // save the position of the first touch so we can determine whether the user is dragging
-                // left or right
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    mFirstTouchX = event.getX();
-                    mFirstTouchY = event.getY();
-                }
-
-
-                if (event.getPointerCount() > 1
-                        || (event.getX() < mFirstTouchX)
-                        || (event.getX() > mFirstTouchX)
-                        || (event.getY() < mFirstTouchY)
-                        || (event.getY() > mFirstTouchY)) {
-                    mViewPager.requestDisallowInterceptTouchEvent(true);
-                    mParent.requestDisallowInterceptTouchEvent(true);
-                }
-                else {
-                    mViewPager.requestDisallowInterceptTouchEvent(false);
-                    mParent.requestDisallowInterceptTouchEvent(true);
-                }
-                // TODO Auto-generated method stub
-                return false;
-            }
-
-        });
+//        chartView.setOnTouchListener(new View.OnTouchListener() {
+//            ViewPager mViewPager= MainTabActivity.mViewPager;
+//            @SuppressLint("WrongViewCast")
+//            ViewParent mParent= (ViewParent)findViewById(R.id.durationChart);
+//
+//            float mFirstTouchX,mFirstTouchY;
+//
+//            @Override
+//            public boolean onTouch(View arg0, MotionEvent event) {
+//
+//                // save the position of the first touch so we can determine whether the user is dragging
+//                // left or right
+//                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+//                    mFirstTouchX = event.getX();
+//                    mFirstTouchY = event.getY();
+//                }
+//
+//
+//                if (event.getPointerCount() > 1
+//                        || (event.getX() < mFirstTouchX)
+//                        || (event.getX() > mFirstTouchX)
+//                        || (event.getY() < mFirstTouchY)
+//                        || (event.getY() > mFirstTouchY)) {
+//                    mViewPager.requestDisallowInterceptTouchEvent(true);
+//                    mParent.requestDisallowInterceptTouchEvent(true);
+//                }
+//                else {
+//                    mViewPager.requestDisallowInterceptTouchEvent(false);
+//                    mParent.requestDisallowInterceptTouchEvent(true);
+//                }
+//                // TODO Auto-generated method stub
+//                return false;
+//            }
+//
+//        });
 
         LinearLayout chart_container=(LinearLayout)findViewById(id);
         chart_container.addView(chartView,0);
@@ -332,40 +327,40 @@ public class AppStatsActivity extends ActionBarActivity {
 
     public void drawBarChart(XYMultipleSeriesDataset dataset,XYMultipleSeriesRenderer mRenderer,int id){
         final GraphicalView chartView = ChartFactory.getBarChartView(this, dataset, mRenderer, BarChart.Type.DEFAULT);
-        chartView.setOnTouchListener(new View.OnTouchListener() {
-            ViewPager mViewPager= MainTabActivity.mViewPager;
-            @SuppressLint("WrongViewCast")
-            ViewParent mParent= (ViewParent)findViewById(R.id.durationChart);
-
-            float mFirstTouchX,mFirstTouchY;
-
-            @Override
-            public boolean onTouch(View arg0, MotionEvent event) {
-
-                // save the position of the first touch so we can determine whether the user is dragging
-                // left or right
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    mFirstTouchX = event.getX();
-                    mFirstTouchY = event.getY();
-                }
-
-                if (event.getPointerCount() > 1
-                        || (event.getX() < mFirstTouchX)
-                        || (event.getX() > mFirstTouchX)
-                        || (event.getY() < mFirstTouchY)
-                        || (event.getY() > mFirstTouchY)) {
-                    mViewPager.requestDisallowInterceptTouchEvent(true);
-                    mParent.requestDisallowInterceptTouchEvent(true);
-                }
-                else {
-                    mViewPager.requestDisallowInterceptTouchEvent(false);
-                    mParent.requestDisallowInterceptTouchEvent(true);
-                }
-                // TODO Auto-generated method stub
-                return false;
-            }
-
-        });
+//        chartView.setOnTouchListener(new View.OnTouchListener() {
+//            ViewPager mViewPager= MainTabActivity.mViewPager;
+//            @SuppressLint("WrongViewCast")
+//            ViewParent mParent= (ViewParent)findViewById(R.id.durationChart);
+//
+//            float mFirstTouchX,mFirstTouchY;
+//
+//            @Override
+//            public boolean onTouch(View arg0, MotionEvent event) {
+//
+//                // save the position of the first touch so we can determine whether the user is dragging
+//                // left or right
+//                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+//                    mFirstTouchX = event.getX();
+//                    mFirstTouchY = event.getY();
+//                }
+//
+//                if (event.getPointerCount() > 1
+//                        || (event.getX() < mFirstTouchX)
+//                        || (event.getX() > mFirstTouchX)
+//                        || (event.getY() < mFirstTouchY)
+//                        || (event.getY() > mFirstTouchY)) {
+//                    mViewPager.requestDisallowInterceptTouchEvent(true);
+//                    mParent.requestDisallowInterceptTouchEvent(true);
+//                }
+//                else {
+//                    mViewPager.requestDisallowInterceptTouchEvent(false);
+//                    mParent.requestDisallowInterceptTouchEvent(true);
+//                }
+//                // TODO Auto-generated method stub
+//                return false;
+//            }
+//
+//        });
         LinearLayout chart_container=(LinearLayout)findViewById(id);
         chart_container.addView(chartView,0);
     }
