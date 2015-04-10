@@ -140,11 +140,11 @@ public class StatsFragment extends Fragment {
 
         mRenderer.setBarSpacing((int)(2 * density));
         mRenderer.setXLabels(0);
-        mRenderer.setZoomEnabled(false);
-        mRenderer.setPanEnabled(false,false);
-        mRenderer.setClickEnabled(false);
-        mRenderer.setInScroll(false);
-        mRenderer.setZoomButtonsVisible(false);
+//        mRenderer.setZoomEnabled(false);
+//        mRenderer.setPanEnabled(false,false);
+//        mRenderer.setClickEnabled(false);
+//        mRenderer.setInScroll(false);
+//        mRenderer.setZoomButtonsVisible(true);
 
         mRenderer.addSeriesRenderer(0,useSeriesRenderer);
         mRenderer.addSeriesRenderer(1,prodSeriesRenderer);
@@ -185,11 +185,11 @@ public class StatsFragment extends Fragment {
 
         mRenderer.setBarSpacing((int)(2 * density));
         mRenderer.setXLabels(0);
-        mRenderer.setZoomEnabled(false);
-        mRenderer.setPanEnabled(false,false);
-        mRenderer.setClickEnabled(false);
-        mRenderer.setInScroll(false);
-        mRenderer.setZoomButtonsVisible(false);
+//        mRenderer.setZoomEnabled(false);
+//        mRenderer.setPanEnabled(false,false);
+//        mRenderer.setClickEnabled(false);
+//        mRenderer.setInScroll(false);
+//        mRenderer.setZoomButtonsVisible(true);
 
         mRenderer.addSeriesRenderer(0,prodSeriesRenderer);
         int marginY=1;
@@ -303,10 +303,10 @@ public class StatsFragment extends Fragment {
         mRenderer.setXLabelsAlign(Paint.Align.RIGHT);
         mRenderer.setXLabelsAngle(-45);
 
-        mRenderer.setZoomEnabled(true);
-        mRenderer.setPanEnabled(true,true);
-        mRenderer.setClickEnabled(true);
-        mRenderer.setInScroll(true);
+//        mRenderer.setZoomEnabled(true);
+//        mRenderer.setPanEnabled(true,true);
+//        mRenderer.setClickEnabled(true);
+//        mRenderer.setInScroll(true);
 
         mRenderer.setZoomButtonsVisible(true);
         mRenderer.setYAxisMin(0);
@@ -322,7 +322,7 @@ public class StatsFragment extends Fragment {
         mRenderer.setYLabelsAlign(Paint.Align.RIGHT);
         mRenderer.setChartTitle(chartTitle);
         mRenderer.setShowGrid(true);
-        int[] margins={(int)(20 * density),(int)(40 * density),(int)(25 * density),0};
+        int[] margins={(int)(20 * density),(int)(40 * density),(int)(80 * density),0};
         mRenderer.setMargins(margins);
 
         return mRenderer;
@@ -374,7 +374,41 @@ public class StatsFragment extends Fragment {
 
     public void drawBarChart(XYMultipleSeriesDataset dataset,XYMultipleSeriesRenderer mRenderer,int id){
         final GraphicalView chartView = ChartFactory.getBarChartView(context, dataset, mRenderer, BarChart.Type.DEFAULT);
+        chartView.setOnTouchListener(new View.OnTouchListener() {
+            ViewPager mViewPager= MainTabActivity.mViewPager;
+            @SuppressLint("WrongViewCast")
+            ViewParent mParent= (ViewParent)rootView.findViewById(R.id.durationChart);
 
+            float mFirstTouchX,mFirstTouchY;
+
+            @Override
+            public boolean onTouch(View arg0, MotionEvent event) {
+
+                // save the position of the first touch so we can determine whether the user is dragging
+                // left or right
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    mFirstTouchX = event.getX();
+                    mFirstTouchY = event.getY();
+                }
+
+
+                if (event.getPointerCount() > 1
+                        || (event.getX() < mFirstTouchX)
+                        || (event.getX() > mFirstTouchX)
+                        || (event.getY() < mFirstTouchY)
+                        || (event.getY() > mFirstTouchY)) {
+                    mViewPager.requestDisallowInterceptTouchEvent(true);
+                    mParent.requestDisallowInterceptTouchEvent(true);
+                }
+                else {
+                    mViewPager.requestDisallowInterceptTouchEvent(false);
+                    mParent.requestDisallowInterceptTouchEvent(true);
+                }
+                // TODO Auto-generated method stub
+                return false;
+            }
+
+        });
         LinearLayout chart_container=(LinearLayout)rootView.findViewById(id);
         chart_container.addView(chartView,0);
     }
