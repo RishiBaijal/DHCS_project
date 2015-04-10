@@ -3,12 +3,13 @@ package in.ac.iiitd.dhcs.focus.Database;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 import in.ac.iiitd.dhcs.focus.StatsObjects.ProductivePercentStatObject;
 import in.ac.iiitd.dhcs.focus.StatsObjects.ProductiveTimeStatObject;
@@ -48,7 +49,7 @@ public class StatsFetcher {
                 String date = cursor.getString(0);
                 long p_dur = cursor.getLong(1);
                 long u_dur = cursor.getLong(2);
-                Log.d(TAG, "Time entry: " + date + ", " + p_dur + ", " + u_dur);
+//                Log.d(TAG, "Time entry: " + date + ", " + p_dur + ", " + u_dur);
 
                 long dateLong= 0;
                 try {
@@ -63,6 +64,8 @@ public class StatsFetcher {
             }
         }
 
+        db.close();
+
         return  statList;
     }
 
@@ -74,7 +77,7 @@ public class StatsFetcher {
             float percent=((float)ptso.getProdDur()/(float)ptso.getUseDur())*100;
             ProductivePercentStatObject ppso = new ProductivePercentStatObject(ptso.getDate(),percent);
             statList.add(ppso);
-            Log.d(TAG, "Percent entry: " + ppso.getDate() + ", " + percent);
+//            Log.d(TAG, "Percent entry: " + ppso.getDate() + ", " + percent);
         }
 
         return  statList;
@@ -99,7 +102,7 @@ public class StatsFetcher {
         for(ProductiveTimeStatObject ptso:timeList) {
             Calendar cal=Calendar.getInstance();
             cal.setTimeInMillis(ptso.getDate());
-            int day=cal.DAY_OF_WEEK;
+            int day=cal.get(Calendar.DAY_OF_WEEK);
 
             prod_dur[day]+=ptso.getProdDur();
             use_dur[day]+=ptso.getUseDur();
@@ -107,8 +110,12 @@ public class StatsFetcher {
         }
 
         for(int i=1;i<8;i++){
-            long prod=prod_dur[i]/count[i];
-            long use=use_dur[i]/count[i];
+            long prod=0,use=0;
+            if(count[i]!=0){
+                prod=prod_dur[i]/count[i];
+                use=use_dur[i]/count[i];
+//                Log.v(TAG,daysOfWeek[i-1]+" "+prod+" "+use);
+            }
             WeeklyTimeStatObject wtso=new WeeklyTimeStatObject(daysOfWeek[i-1],prod,use);
             statList[i]=wtso;
         }
@@ -131,16 +138,20 @@ public class StatsFetcher {
         }
 
         for(ProductivePercentStatObject ppso:timeList) {
-            Calendar cal=Calendar.getInstance();
-            cal.setTimeInMillis(ppso.getDate());
-            int day=cal.DAY_OF_WEEK;
+            Calendar cal=new GregorianCalendar();
+            cal.setTime(new Date(ppso.getDate()));
+            int day=cal.get(Calendar.DAY_OF_WEEK);
 
             prod_per[day]+=ppso.getProdPercent();
             count[day]++;
         }
 
         for(int i=1;i<8;i++){
-            float prod=(float)prod_per[i]/(float)count[i];
+            float prod=0;
+            if(count[i]!=0) {
+                prod = (float) prod_per[i] / (float) count[i];
+//                Log.v(TAG,daysOfWeek[i-1]+" "+prod);
+            }
             WeeklyPercentStatObject wpso=new WeeklyPercentStatObject(daysOfWeek[i-1],prod);
             statList[i]=wpso;
         }

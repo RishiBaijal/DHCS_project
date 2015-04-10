@@ -15,16 +15,14 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.RelativeLayout;
 import android.view.View;
-import android.view.LayoutInflater;
+import android.widget.RelativeLayout;
 
 import java.util.Locale;
 
 import in.ac.iiitd.dhcs.focus.MainTabs.ProductivityFragment;
 import in.ac.iiitd.dhcs.focus.MainTabs.StatsFragment;
 import in.ac.iiitd.dhcs.focus.MainTabs.ZenFragment;
-import in.ac.iiitd.dhcs.focus.Objects.TrackedAppObject;
 import in.ac.iiitd.dhcs.focus.Service.FocusService;
 import in.ac.iiitd.dhcs.focus.Service.ScreenStateReceiver;
 
@@ -45,7 +43,7 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
      * The {@link ViewPager} that will host the section contents.
      */
     private static String TAG ="MainTabActivity";
-    ViewPager mViewPager;
+    public static ViewPager mViewPager;
     public SharedPreferences mPreferences;
     boolean showTut;
     Context mContext;
