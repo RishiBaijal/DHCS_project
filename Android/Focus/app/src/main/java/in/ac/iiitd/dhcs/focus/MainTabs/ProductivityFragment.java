@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -43,6 +44,7 @@ public class ProductivityFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private TextView textViewGoal;
     LinearLayout ll;
     FocusDbHelper dbs ;
     MeterView productivityMeterView;
@@ -86,6 +88,22 @@ public class ProductivityFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
+
+        if(CommonUtils.ProductivityScore==0L){
+            updateProductivity();
+        }
+
+        long timeInMillis = System.currentTimeMillis();
+        if(getcount(CommonUtils.unixTimestampToDate(timeInMillis))<1) {
+            Log.v(TAG,"DateCountforProd<0");
+            CommonUtils.ProductivityGoal = 50L;
+            textViewGoal.setText("50%");
+        }
+        else if(CommonUtils.ProductivityGoal==0L){
+            getProdGoal();
+            Log.v(TAG,"DateCountforProd=0"+String.valueOf(getcount(CommonUtils.unixTimestampToDate(timeInMillis))));
+        }
+
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -104,7 +122,7 @@ public class ProductivityFragment extends Fragment {
         View inflaterView=inflater.inflate(R.layout.fragment_productivity, container, false);
         productivityMeterView=(MeterView)inflaterView.findViewById(R.id.productivityMeterView);
         ll=(LinearLayout)inflaterView.findViewById(R.id.productivityLinearLayout);
-
+        textViewGoal = (TextView) ll.findViewById(R.id.textView3);
         return inflaterView;
     }
 
@@ -128,7 +146,7 @@ public class ProductivityFragment extends Fragment {
 
     public void setMainProductivty(){
         productivityMeterView.setProgress(CommonUtils.ProductivityScore);
-        productivityMeterView.setTarget(80);
+        productivityMeterView.setTarget((float)CommonUtils.ProductivityGoal);
         productivityMeterView.setProgressValue(CommonUtils.TotalProductivity);
     }
     public void updateList(){
@@ -180,5 +198,71 @@ public class ProductivityFragment extends Fragment {
             Log.v(TAG, obj.getName()+" " + obj.getUsageDuration() + " " + obj.getProductivityDuration());
             addAppDistribution(obj.getName(),obj.getAppIcon(),obj.getProductivityDuration(),progress);
         }
+    }
+
+
+    public int getcount(String Date) {
+
+        SQLiteDatabase db = dbs.getWritableDatabase();
+
+        String sql = "select count(*) from '" + DbContract.ProductivityEntry.TABLE_NAME + "' where " +
+                DbContract.ProductivityEntry.TRACKING_DATE + " < '" + Date + "'";
+        Cursor cursor = db.rawQuery(sql, null);
+        cursor.moveToFirst();
+        int length = cursor.getInt(0);
+        cursor.close();
+        db.close();
+        return length;
+    }
+
+    public void getProdGoal() {
+        SQLiteDatabase db = dbs.getWritableDatabase();
+        long timeInMillis = System.currentTimeMillis();
+        String todaydate = CommonUtils.unixTimestampToDate(timeInMillis);
+        CommonUtils.ProductivityGoal = CommonUtils.TotalDuration = CommonUtils.TotalProductivity = 0L;
+
+        String sql = "select " + DbContract.ProductivityEntry.USAGE_DURATION + "," + DbContract.ProductivityEntry.PRODUCTIVE_DURATION + " from '" + DbContract.ProductivityEntry.TABLE_NAME + "'" +
+                " where " + DbContract.ProductivityEntry.TRACKING_DATE + " < '" + todaydate + "'";
+        Cursor cursor = db.rawQuery(sql, null);
+        cursor.moveToFirst();
+
+        if (cursor != null && cursor.getCount() > 0) {
+            cursor.moveToFirst();
+        }
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            CommonUtils.TotalDuration += cursor.getLong(cursor.getColumnIndex(DbContract.ProductivityEntry.USAGE_DURATION));
+            CommonUtils.TotalProductivity += cursor.getLong(cursor.getColumnIndex(DbContract.ProductivityEntry.PRODUCTIVE_DURATION));
+        }
+        cursor.close();
+        CommonUtils.ProductivityGoal = (long) (((float) CommonUtils.TotalProductivity / (float) CommonUtils.TotalDuration) * 100);
+        textViewGoal.setText(String.valueOf((float)CommonUtils.ProductivityGoal) +"%");
+        Log.v(TAG, CommonUtils.TotalProductivity + " " + CommonUtils.TotalDuration + " " + 100 * ((float) CommonUtils.TotalProductivity / (float) CommonUtils.TotalDuration));
+        db.close();
+    }
+
+
+    public void updateProductivity() {
+        SQLiteDatabase db = dbs.getWritableDatabase();
+        long timeInMillis = System.currentTimeMillis();
+        String todaydate = CommonUtils.unixTimestampToDate(timeInMillis);
+        CommonUtils.ProductivityScore = CommonUtils.TotalDuration = CommonUtils.TotalProductivity = 0L;
+
+        String sql = "select " + DbContract.ProductivityEntry.USAGE_DURATION + "," + DbContract.ProductivityEntry.PRODUCTIVE_DURATION + " from '" + DbContract.ProductivityEntry.TABLE_NAME + "'" +
+                " where " + DbContract.ProductivityEntry.TRACKING_DATE + " LIKE '" + todaydate + "'";
+        Cursor cursor = db.rawQuery(sql, null);
+        cursor.moveToFirst();
+
+        if (cursor != null && cursor.getCount() > 0) {
+            cursor.moveToFirst();
+        }
+        for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+            CommonUtils.TotalDuration += cursor.getLong(0);
+            CommonUtils.TotalProductivity += cursor.getLong(1);
+        }
+        cursor.close();
+        CommonUtils.ProductivityScore = (long) (((float) CommonUtils.TotalProductivity / (float) CommonUtils.TotalDuration) * 100);
+        Log.v(TAG, CommonUtils.TotalProductivity + " " + CommonUtils.TotalDuration + " " + 100 * ((float) CommonUtils.TotalProductivity / (float) CommonUtils.TotalDuration));
+
+        db.close();
     }
 }

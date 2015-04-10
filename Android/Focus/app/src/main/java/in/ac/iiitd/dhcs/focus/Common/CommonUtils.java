@@ -18,6 +18,7 @@ public class CommonUtils {
     public static long ProductivityScore=0L;
     public static long TotalDuration=0L;
     public static long TotalProductivity=0L;
+    public static long ProductivityGoal=0L;
 
     /**
      * Convert unixtime in milliseconds to human readable data time of format dd/MM/yyyy HH:mm:ss

@@ -68,6 +68,7 @@ public class FocusService extends Service {
         Productivityscore = 0.7f;
         dbs = new FocusDbHelper(context);
         getList();
+        updateProductivity();
         a = (ActivityManager) context.getSystemService("activity");
         try {
             d = Class.forName(a.getClass().getName()).getField("PROCESS_STATE_TOP").getInt(a);
