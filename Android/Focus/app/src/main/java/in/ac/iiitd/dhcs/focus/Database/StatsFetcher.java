@@ -35,9 +35,13 @@ public class StatsFetcher {
         String query = "SELECT " + DbContract.ProductivityEntry.TRACKING_DATE + ","
                 + " SUM" + "(" + DbContract.ProductivityEntry.PRODUCTIVE_DURATION + "),"
                 + " SUM" + "(" + DbContract.ProductivityEntry.USAGE_DURATION + ")"
-                + " FROM " + DbContract.ProductivityEntry.TABLE_NAME
+                + " FROM " + DbContract.ProductivityEntry.TABLE_NAME;
 //                + " WHERE " + DbContract.ProductivityEntry.TRACKING_DATE + "!=" + today
-                + " GROUP BY " + DbContract.ProductivityEntry.TRACKING_DATE
+
+        if(!appName.isEmpty())
+            query=query+ " WHERE " + DbContract.ProductivityEntry.APP_NAME + " LIKE '" + appName+"'";
+
+        query=query+ " GROUP BY " + DbContract.ProductivityEntry.TRACKING_DATE
                 + " ORDER BY " + DbContract.ProductivityEntry.TRACKING_DATE + " ASC";
 
         Cursor cursor = db.rawQuery(

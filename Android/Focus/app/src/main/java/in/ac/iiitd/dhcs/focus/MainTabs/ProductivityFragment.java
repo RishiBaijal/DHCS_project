@@ -2,6 +2,7 @@ package in.ac.iiitd.dhcs.focus.MainTabs;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -18,6 +19,7 @@ import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 
+import in.ac.iiitd.dhcs.focus.AppStatsActivity;
 import in.ac.iiitd.dhcs.focus.Common.CommonUtils;
 import in.ac.iiitd.dhcs.focus.CustomUIClasses.AppDistributionView;
 import in.ac.iiitd.dhcs.focus.CustomUIClasses.MeterView;
@@ -108,9 +110,17 @@ public class ProductivityFragment extends Fragment {
         return inflaterView;
     }
 
-    private void addAppDistribution(String name,Drawable icon,long duration,float progress){
+    private void addAppDistribution(final String name,Drawable icon,long duration,float progress){
         AppDistributionView app1 = new AppDistributionView(getActivity(), null);
         ll.addView(app1);
+        app1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(getActivity(),AppStatsActivity.class);
+                intent.putExtra("appName",name);
+                startActivity(intent);
+            }
+        });
         app1.setProgress(progress);
         app1.setDuration(duration);
         app1.setIcon(icon);

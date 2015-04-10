@@ -11,4 +11,5 @@
     <color name="productive_fill">#bc46a9bd</color>
     <color name="usage_fill">#80ffb600</color>
     <color name="transparent">#00000000</color>
+    <color name="graph_text">#ff6d6a6a</color>
 </resources>
