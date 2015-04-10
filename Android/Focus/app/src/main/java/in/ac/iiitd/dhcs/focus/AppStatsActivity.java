@@ -82,11 +82,6 @@ public class AppStatsActivity extends ActionBarActivity {
 
         mRenderer.setBarSpacing((int)(2 * density));
         mRenderer.setXLabels(0);
-//        mRenderer.setZoomEnabled(false);
-//        mRenderer.setPanEnabled(false,false);
-//        mRenderer.setClickEnabled(false);
-//        mRenderer.setInScroll(false);
-        mRenderer.setZoomButtonsVisible(true);
 
         mRenderer.addSeriesRenderer(0,useSeriesRenderer);
         mRenderer.addSeriesRenderer(1,prodSeriesRenderer);
@@ -115,6 +110,12 @@ public class AppStatsActivity extends ActionBarActivity {
 
         int marginY=1;
         mRenderer.setYAxisMax(useBarSeries.getMaxY()+marginY);
+        mRenderer.setYAxisMin(0);
+        mRenderer.setXAxisMax(8);
+        mRenderer.setXAxisMin(0);
+
+        mRenderer.setPanLimits(new double[] {0,8,
+                (double)0,useBarSeries.getMaxY()+marginY});
 
         drawBarChart(dataset, mRenderer, R.id.durationBarChart);
     }
@@ -127,15 +128,11 @@ public class AppStatsActivity extends ActionBarActivity {
 
         mRenderer.setBarSpacing((int)(2 * density));
         mRenderer.setXLabels(0);
-//        mRenderer.setZoomEnabled(false);
-//        mRenderer.setPanEnabled(false,false);
-//        mRenderer.setClickEnabled(false);
-//        mRenderer.setInScroll(false);
-//        mRenderer.setZoomButtonsVisible(true);
 
         mRenderer.addSeriesRenderer(0,prodSeriesRenderer);
         int marginY=1;
         mRenderer.setYAxisMax(100);
+        mRenderer.setYAxisMin(0);
 
         XYSeries prodBarSeries=new XYSeries("Productive");
 
@@ -152,6 +149,12 @@ public class AppStatsActivity extends ActionBarActivity {
 
         final XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
         dataset.addSeries(0,prodBarSeries);
+
+        mRenderer.setXAxisMax(8);
+        mRenderer.setXAxisMin(0);
+
+        mRenderer.setPanLimits(new double[] {0,8,
+                (double)0,100});
 
         drawBarChart(dataset, mRenderer, R.id.percentBarChart);
     }
@@ -187,6 +190,14 @@ public class AppStatsActivity extends ActionBarActivity {
 
         int marginY=1;
         mRenderer.setYAxisMax(useTimeSeries.getMaxY()+marginY);
+        mRenderer.setYAxisMin(0);
+        mRenderer.setXAxisMax(prodTimeSeries.getMaxX());
+        mRenderer.setXAxisMin(prodTimeSeries.getMinX());
+
+
+        mRenderer.setPanLimits(new double[] {useTimeSeries.getMinX(),useTimeSeries.getMaxX(),
+                (double)0,useTimeSeries.getMaxY()+marginY});
+
 
         drawTimeChart(dataset, mRenderer, R.id.durationChart);
     }
@@ -200,6 +211,7 @@ public class AppStatsActivity extends ActionBarActivity {
         mRenderer.addSeriesRenderer(0,prodSeriesRenderer);
 
         mRenderer.setYAxisMax(100);
+        mRenderer.setYAxisMin(0);
 
         TimeSeries prodTimeSeries=new TimeSeries("Productive");
 
@@ -207,12 +219,17 @@ public class AppStatsActivity extends ActionBarActivity {
             double pPer=ppso.getProdPercent();
 //            Log.v(TAG,pDur+" "+ptso.getDate());
             prodTimeSeries.add(new Date(ppso.getDate()), pPer);
-//            prodTimeSeries.add(new Date(ptso.getDate()+(24*60*60*1000)), pDur);
+//            prodTimeSeries.add(new Date(ppso.getDate()+(24*60*60*1000)), pPer);
         }
 
         final XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
         dataset.addSeries(0,prodTimeSeries);
 
+        mRenderer.setXAxisMax(prodTimeSeries.getMaxX());
+        mRenderer.setXAxisMin(prodTimeSeries.getMinX());
+
+        mRenderer.setPanLimits(new double[] {prodTimeSeries.getMinX(),prodTimeSeries.getMaxX(),
+                (double)0,100});
 
         drawTimeChart(dataset, mRenderer, R.id.percentChart);
     }
@@ -331,7 +348,6 @@ public class AppStatsActivity extends ActionBarActivity {
                     mFirstTouchX = event.getX();
                     mFirstTouchY = event.getY();
                 }
-
 
                 if (event.getPointerCount() > 1
                         || (event.getX() < mFirstTouchX)
