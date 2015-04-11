@@ -1,8 +1,8 @@
 package in.ac.iiitd.dhcs.focus.MainTabs;
 
 
-//<<<<<<< Updated upstream
-//=======
+import in.ac.iiitd.dhcs.focus.CustomUIClasses.TimerView;
+
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
@@ -12,8 +12,11 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
-//>>>>>>> Stashed changes
+
+import android.content.Context;
+
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -125,6 +128,29 @@ public class ZenFragment extends Fragment {
         return inflaterView;
     }
 
+//    public void onPause()
+//    {
+//        super.onPause();
+//        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+//        boolean isScreenOn = powerManager.isScreenOn();
+//
+//        if (!isScreenOn)
+//        {
+//            System.out.println("The motherfucking screen is locked");
+//        }
+//        else
+//        {
+//            System.out.println("The brotherfucking screen is unlocked.");
+//            Context context = getApplicationContext();
+//            CharSequence text = "The screen is unlocked. You are getting distracted!";
+//            int duration = Toast.LENGTH_LONG;
+//
+//            Toast.makeText(context, text, duration).show();
+//        }
+//    }
+
+
+
     @Override
     public void onResume(){
         super.onResume();
@@ -141,9 +167,11 @@ public class ZenFragment extends Fragment {
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//<<<<<<< Updated upstream
+
+                MainTabActivity.zenStarted = true;
+
                 long setMillis=(((timePicker.getCurrentHour()*60+timePicker.getCurrentMinute())*60)*1000);
-//=======
+
                 long[] pattern = {500,500,500,500,500,500,500,500,500};
                 MainTabActivity.zenStarted = true;
                 MainTabActivity.wasInZen = true;
@@ -156,8 +184,8 @@ public class ZenFragment extends Fragment {
                 stackBuilder.addParentStack(MainTabActivity.class);
                 stackBuilder.addNextIntent(intent);
                 PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-                Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                mBuilder.setSound(alarmSound);
+                //Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                //mBuilder.setSound(alarmSound);
                 mBuilder.setLights(Color.BLUE, 500, 500);
                 mBuilder.setVibrate(pattern);
                 mBuilder.setAutoCancel(false);
@@ -195,7 +223,7 @@ public class ZenFragment extends Fragment {
 
 
                 setMillis=(((timePicker.getCurrentHour()*60+timePicker.getCurrentMinute())*60)*1000);
-                if (ZenTimer.timerFinished == true) {
+                if (ZenTimer.timerFinished) {
                     zenModeCompleted++;
                     System.out.println("Zen mode completed.");
                     zenModeMilliseconds += setMillis;
@@ -209,11 +237,12 @@ public class ZenFragment extends Fragment {
                 {
 
                 }
-//>>>>>>> Stashed changes
+
                 Log.v(TAG, "Set: " + setMillis);
                 viewFlipper.showNext();
                 zenTimer=new ZenTimer(setMillis,TICK,timerView,viewFlipper);
                 zenTimer.start();
+
             }
         });
 
@@ -223,8 +252,7 @@ public class ZenFragment extends Fragment {
             public void onClick(View v) {
                 if(zenTimer!=null)
                 {
-//<<<<<<< Updated upstream
-//=======
+
                     MainTabActivity.zenStarted = false;
                     MainTabActivity.wasInZen = false;
                     zenModeStoppedNumber++;
@@ -245,8 +273,9 @@ public class ZenFragment extends Fragment {
                     System.out.println("The value added to milliseconds is "+zenModeMilliseconds);
                     //zenModeCompleted = zenModeStartedNumber - zenModeStoppedNumber - MainTabActivity.zenModeDistracted;
 
-//
-//>>>>>>> Stashed changes
+
+                    MainTabActivity.zenStarted = false;
+
                     zenTimer.cancel();
                     viewFlipper.showNext();
                     timePicker.setCurrentHour(0);

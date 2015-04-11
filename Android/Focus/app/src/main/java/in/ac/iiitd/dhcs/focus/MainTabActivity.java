@@ -26,6 +26,7 @@ import android.view.MenuItem;
 import android.widget.RelativeLayout;
 import android.view.View;
 import android.view.LayoutInflater;
+import android.widget.Toast;
 
 import java.util.Locale;
 
@@ -50,10 +51,8 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
     SectionsPagerAdapter mSectionsPagerAdapter;
 
     /**
-     * The {@link ViewPager} that will host the section contents.
-//     */
-//<<<<<<< Updated upstream
-//=======
+     * The {@link ViewPager} that will host the section contents.*/
+
 
     public static int zenVisited = 0;
     public static int statsVisited = 0;
@@ -65,7 +64,11 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
     public static boolean zenStarted = false;
     public static boolean wasInZen = false;
 //    public static int zenModeDistracted = 0;
-//>>>>>>> Stashed changes
+
+//
+//     */
+    //public static boolean zenStarted = false;
+// Added toast messages
     private static String TAG ="MainTabActivity";
     ViewPager mViewPager;
     public SharedPreferences mPreferences;
@@ -137,8 +140,6 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
     }
 
     @Override
-//<<<<<<< Updated upstream
-//=======
     protected void onPause()
     {
         super.onPause();
@@ -165,8 +166,8 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
                 stackBuilder.addNextIntent(intent);
                 PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
                 mBuilder.setAutoCancel(false);
-                Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                mBuilder.setSound(alarmSound);
+                //Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                //mBuilder.setSound(alarmSound);
                 mBuilder.setLights(Color.RED, 500, 500);
                 mBuilder.setVibrate(pattern);
                 mBuilder.setStyle(new NotificationCompat.InboxStyle());
@@ -198,8 +199,35 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
 //    }
 
 
+
+//@Override
+//    protected void onPause()
+//    {
+//        super.onPause();
+//        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+//        boolean isScreenOn = powerManager.isScreenOn();
+//
+//        if (!isScreenOn)
+//        {
+//            System.out.println("The screen is locked");
+//        }
+//        else
+//        {
+//            if (zenStarted == true) {
+//                System.out.println("The value of zenStarted is "+zenStarted);
+//                System.out.println("The screen is unlocked.");
+//                Context context = getApplicationContext();
+//                CharSequence text = "The screen is unlocked. You are getting distracted!";
+//                int duration = Toast.LENGTH_LONG;
+//
+//                Toast.makeText(context, text, duration).show();
+//            }
+//        }
+//    }
+
+
     @Override
-//>>>>>>> Stashed changes
+//Added toast messages
     protected void onResume() {
         super.onResume();
 
