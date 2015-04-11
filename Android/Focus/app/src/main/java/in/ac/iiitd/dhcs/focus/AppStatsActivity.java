@@ -57,14 +57,14 @@ public class AppStatsActivity extends ActionBarActivity {
         setTitle(appName+" "+"Statistics");
 
         statTimeList= StatsFetcher.getProductiveTime(this, appName);
-        statPercentList=StatsFetcher.getProductivePercent(this, appName);
+//        statPercentList=StatsFetcher.getProductivePercent(this, appName);
         weekTimeList=StatsFetcher.getWeeklyTime(this, appName);
-        weekPercentList=StatsFetcher.getWeeklyPercent(this,appName);
+//        weekPercentList=StatsFetcher.getWeeklyPercent(this,appName);
 
         openDurationChart();
         openWeeklyDurationChart();
-        openPercentChart();
-        openWeeklyPercentChart();
+//        openPercentChart();
+//        openWeeklyPercentChart();
     }
 
     private void openWeeklyDurationChart(){

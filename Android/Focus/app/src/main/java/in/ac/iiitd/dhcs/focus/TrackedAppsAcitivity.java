@@ -19,7 +19,6 @@ import java.util.List;
 import in.ac.iiitd.dhcs.focus.Database.DbContract;
 import in.ac.iiitd.dhcs.focus.Database.FocusDbHelper;
 import in.ac.iiitd.dhcs.focus.ListAdapters.TrackedAppListAdapter;
-import in.ac.iiitd.dhcs.focus.Objects.TrackedAppObject;
 import in.ac.iiitd.dhcs.focus.Objects.UserAppObject;
 
 
@@ -37,7 +36,7 @@ public class TrackedAppsAcitivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracked_apps);
-        userPackageInfoList = new ArrayList<>();
+        userPackageInfoList = new ArrayList<UserAppObject>();
         filterSystemPackage();
         dbs = new FocusDbHelper(getApplicationContext());
         listView = (ListView) findViewById(R.id.listView);
@@ -98,7 +97,25 @@ public class TrackedAppsAcitivity extends ActionBarActivity {
     public void updateProductivityDB(){
         SQLiteDatabase db = dbs.getWritableDatabase();
 
-        TrackedAppListAdapter.trackedapps.clear();
+        for(UserAppObject obj : TrackedAppListAdapter.userAppObjectList) {
+            if(obj.getIsChecked()){
+            String appName = packageManager.getApplicationLabel(obj.getPackageInfo().applicationInfo).toString();
+            Float Score = obj.getProdscore();
+            //TrackedAppListAdapter.trackedapps.put(AppName, Score);
+            Log.v(TAG, "Updating" + appName + " : " + Score);
+            String sql = "select " + DbContract.TrackedAppEntry._ID + " from '" + DbContract.TrackedAppEntry.TABLE_NAME + "'" +
+                    " where " + DbContract.TrackedAppEntry.APP_NAME + " LIKE '" + appName + "'";
+            Cursor cursor = db.rawQuery(sql, null);
+            cursor.moveToFirst();
+            String rowid = cursor.getString(cursor.getColumnIndex(DbContract.TrackedAppEntry._ID));
+            ContentValues values = new ContentValues();
+            values.put(DbContract.TrackedAppEntry.PRODUCTIVITY_SCORE, Score);
+            db.update(DbContract.TrackedAppEntry.TABLE_NAME, values, DbContract.TrackedAppEntry._ID + "=" + rowid, null);
+        }
+
+        }
+
+        /*
         for(TrackedAppObject obj : TrackedAppListAdapter.trackedAppObjectlist){
             String AppName = obj.getName();
             Float Score = obj.getReading();
@@ -113,7 +130,7 @@ public class TrackedAppsAcitivity extends ActionBarActivity {
             values.put(DbContract.TrackedAppEntry.PRODUCTIVITY_SCORE,Score);
             db.update(DbContract.TrackedAppEntry.TABLE_NAME, values, DbContract.TrackedAppEntry._ID + "=" + rowid, null);
         }
-
+    */
         db.close();
     }
 }

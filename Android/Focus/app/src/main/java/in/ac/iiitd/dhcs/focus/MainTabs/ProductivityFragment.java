@@ -229,8 +229,9 @@ public class ProductivityFragment extends Fragment {
         SQLiteDatabase db = dbs.getWritableDatabase();
         long timeInMillis = System.currentTimeMillis();
         String todaydate = CommonUtils.unixTimestampToDate(timeInMillis);
-        CommonUtils.ProductivityGoal = CommonUtils.TotalDuration = CommonUtils.TotalProductivity = 0L;
-
+        CommonUtils.ProductivityGoal = 0L;
+        long TotalDuration = 0L;
+        long TotalProductivity = 0L;
         String sql = "select " + DbContract.ProductivityEntry.USAGE_DURATION + "," + DbContract.ProductivityEntry.PRODUCTIVE_DURATION + " from '" + DbContract.ProductivityEntry.TABLE_NAME + "'" +
                 " where " + DbContract.ProductivityEntry.TRACKING_DATE + " < '" + todaydate + "'";
         Cursor cursor = db.rawQuery(sql, null);
@@ -240,13 +241,14 @@ public class ProductivityFragment extends Fragment {
             cursor.moveToFirst();
         }
         for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-            CommonUtils.TotalDuration += cursor.getLong(cursor.getColumnIndex(DbContract.ProductivityEntry.USAGE_DURATION));
-            CommonUtils.TotalProductivity += cursor.getLong(cursor.getColumnIndex(DbContract.ProductivityEntry.PRODUCTIVE_DURATION));
+            TotalDuration += cursor.getLong(cursor.getColumnIndex(DbContract.ProductivityEntry.USAGE_DURATION));
+            TotalProductivity += cursor.getLong(cursor.getColumnIndex(DbContract.ProductivityEntry.PRODUCTIVE_DURATION));
         }
         cursor.close();
-        CommonUtils.ProductivityGoal = (long) (((float) CommonUtils.TotalProductivity / (float) CommonUtils.TotalDuration) * 100);
+        CommonUtils.ProductivityGoal = (long) (((float) TotalProductivity / (float) TotalDuration) * 100);
         textViewGoal.setText(String.valueOf((int)CommonUtils.ProductivityGoal) +"%");
-        Log.v(TAG,"getProdGoal"+ CommonUtils.TotalProductivity + " " + CommonUtils.TotalDuration + " " + 100 * ((float) CommonUtils.TotalProductivity / (float) CommonUtils.TotalDuration));
+
+        Log.v(TAG, TotalProductivity + " " + TotalDuration + " " + 100 * ((float) TotalProductivity / (float) TotalDuration));
         db.close();
     }
 
