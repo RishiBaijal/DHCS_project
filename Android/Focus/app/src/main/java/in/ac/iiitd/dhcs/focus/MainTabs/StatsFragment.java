@@ -4,6 +4,7 @@ package in.ac.iiitd.dhcs.focus.MainTabs;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import in.ac.iiitd.dhcs.focus.Database.StatsFetcher;
+import in.ac.iiitd.dhcs.focus.MainTabActivity;
 import in.ac.iiitd.dhcs.focus.R;
 import in.ac.iiitd.dhcs.focus.StatsObjects.ProductivePercentStatObject;
 import in.ac.iiitd.dhcs.focus.StatsObjects.ProductiveTimeStatObject;
@@ -88,6 +90,12 @@ public class StatsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MainTabActivity.statsVisited++;
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("productivityModeVisited", Context.MODE_PRIVATE);
+        SharedPreferences.Editor startEditor = sharedPreferences.edit();
+        startEditor.putLong("visitProductivity", MainTabActivity.statsVisited);
+        System.out.println("The number of times stats has been visited is (onCreate method) "+MainTabActivity.statsVisited);
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -123,6 +131,16 @@ public class StatsFragment extends Fragment {
         openWeeklyDurationChart();
         openPercentChart();
         openWeeklyPercentChart();
+
+
+        MainTabActivity.statsVisited++;
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("statsModeVisited", Context.MODE_PRIVATE);
+        SharedPreferences.Editor startEditor = sharedPreferences.edit();
+        startEditor.putLong("visitStats", MainTabActivity.statsVisited);
+
+
+
+        System.out.println("The number of times stats has been visited is "+MainTabActivity.statsVisited);
     }
 
     private void openWeeklyDurationChart(){

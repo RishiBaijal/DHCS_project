@@ -13,6 +13,7 @@ public class ZenTimer extends CountDownTimer {
     TimerView timerView;
     ViewFlipper viewFlipper;
     long millisInFuture;
+    public static boolean timerFinished = false;
 
     /**
      * @param millisInFuture    The number of millis in the future from the call
@@ -38,5 +39,6 @@ public class ZenTimer extends CountDownTimer {
     @Override
     public void onFinish() {
         viewFlipper.showPrevious();
+        timerFinished = true;
     }
 }

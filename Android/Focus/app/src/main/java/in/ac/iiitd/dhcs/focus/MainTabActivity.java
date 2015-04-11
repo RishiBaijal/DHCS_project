@@ -1,21 +1,31 @@
 package in.ac.iiitd.dhcs.focus;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.LayoutInflater;
+import android.widget.Toast;
 import android.widget.RelativeLayout;
 
 import java.util.Locale;
@@ -42,6 +52,24 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
     /**
      * The {@link ViewPager} that will host the section contents.
      */
+
+
+    public static int zenVisited = 0;
+    public static int statsVisited = 0;
+    public static int productivityVisited = 0;
+    public static int trackedAppsVisited = 0;
+    public static int trackedVisited = 0;
+
+
+    public static boolean zenStarted = false;
+    public static boolean wasInZen = false;
+//    public static int zenModeDistracted = 0;
+
+//
+//     */
+    //public static boolean zenStarted = false;
+// Added toast messages
+
     private static String TAG ="MainTabActivity";
     public static ViewPager mViewPager;
     public SharedPreferences mPreferences;
@@ -99,12 +127,145 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         registerReceiver();
         startFocusService();
         checkPrefsAndShowOverlay();
+
+//        if (zenStarted == true)
+//        {
+//            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this).setContentTitle("ZEN MODE STARTED!").setContentText("Zen mode has now been started. Do not get distracted!!");
+//
+//            NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//            mNotificationManager.notify(0, mBuilder.build());
+//
+//
+//            System.out.println("The user has now been notified.");
+//        }
     }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        boolean isScreenOn = powerManager.isScreenOn();
+
+
+
+        if (!isScreenOn)
+        {
+            System.out.println("The screen is locked");
+        }
+        else
+        {
+            if (zenStarted == true) {//if this is executed, the user got distracted
+                long[] pattern = {500,500,500,500,500,500,500,500,500};
+
+                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                Intent intent = new Intent(getApplicationContext(), MainTabActivity.class);
+                NotificationCompat.Builder mBuilder =
+                        new NotificationCompat.Builder(getApplicationContext()).setSmallIcon(R.drawable.abc_cab_background_top_mtrl_alpha).setContentTitle("ZEN MODE OVER!!").setContentText("Seems like you got distracted. Better luck next time!!");
+                TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
+                stackBuilder.addParentStack(MainTabActivity.class);
+                stackBuilder.addNextIntent(intent);
+                PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                mBuilder.setAutoCancel(false);
+                //Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                //mBuilder.setSound(alarmSound);
+                mBuilder.setLights(Color.RED, 500, 500);
+                mBuilder.setVibrate(pattern);
+                mBuilder.setStyle(new NotificationCompat.InboxStyle());
+                //mBuilder.setOngoing(true);
+                mBuilder.setContentIntent(resultPendingIntent);
+                notificationManager.notify(0, mBuilder.build());
+
+                System.out.println("The value of zenStarted is "+zenStarted);
+                System.out.println("The screen is unlocked.");
+//                Context context = getApplicationContext();
+//                CharSequence text = "The screen is unlocked. You are getting distracted!";
+//                int duration = Toast.LENGTH_LONG;
+                //zenModeDistracted++;
+                zenStarted = false;
+
+
+             //   Toast.makeText(context, text, duration).show();
+            }
+        }
+    }
+
+//    protected void shareData()
+//    {
+//        Intent sendIntent = new Intent();
+//        sendIntent.setAction(Intent.ACTION_SEND);
+//        sendIntent.putExtra(Intent.EXTRA_TEXT, "Vedant sucks monkey testicles. ");
+//        sendIntent.setType("text/plain");
+//        startActivity(sendIntent);
+//    }
+
+
+
+//@Override
+//    protected void onPause()
+//    {
+//        super.onPause();
+//        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+//        boolean isScreenOn = powerManager.isScreenOn();
+//
+//        if (!isScreenOn)
+//        {
+//            System.out.println("The screen is locked");
+//        }
+//        else
+//        {
+//            if (zenStarted == true) {
+//                System.out.println("The value of zenStarted is "+zenStarted);
+//                System.out.println("The screen is unlocked.");
+//                Context context = getApplicationContext();
+//                CharSequence text = "The screen is unlocked. You are getting distracted!";
+//                int duration = Toast.LENGTH_LONG;
+//
+//                Toast.makeText(context, text, duration).show();
+//            }
+//        }
+//    }
+
+
+//    @Override
+//    protected void onPause()
+//    {
+//        super.onPause();
+//        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+//        boolean isScreenOn = powerManager.isScreenOn();
+//
+//        if (!isScreenOn)
+//        {
+//            System.out.println("The screen is locked");
+//        }
+//        else
+//        {
+//            if (zenStarted == true) {
+//                System.out.println("The value of zenStarted is "+zenStarted);
+//                System.out.println("The screen is unlocked.");
+//                Context context = getApplicationContext();
+//                CharSequence text = "The screen is unlocked. You are getting distracted!";
+//                int duration = Toast.LENGTH_LONG;
+//
+//                Toast.makeText(context, text, duration).show();
+//            }
+//        }
+//    }
+
 
     @Override
     protected void onResume() {
         super.onResume();
-        mViewPager.setCurrentItem(1);
+
+        if (wasInZen)
+        {
+            mViewPager.setCurrentItem(0, true);// switch to zen
+        }
+        else
+        {
+            mViewPager.setCurrentItem(1);
+        }
+        wasInZen = false;
     }
 
     @Override
@@ -125,6 +286,16 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         {
             Intent intent = new Intent(this, TrackedAppsAcitivity.class);
             this.startActivity(intent);
+        }
+
+        else if (id == R.id.action_share_data)
+        {
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, "Vedant sucks monkey testicles. ");
+            sendIntent.setType("text/plain");
+            startActivity(sendIntent);
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -162,12 +333,15 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
             switch(position){
                 case 2:
                     fragment=new StatsFragment();
+                    System.out.println("Number of times stats fragment has been visited = "+MainTabActivity.statsVisited);
                     break;
                 case 1:
                     fragment=new ProductivityFragment();
+                    System.out.println("Number of times the productivity fragment has been visited = "+MainTabActivity.productivityVisited);
                     break;
                 case 0:
                     fragment=new ZenFragment();
+                    System.out.println("Number of times the zen fragment has been visited = "+MainTabActivity.zenVisited);
                     break;
 
             }
