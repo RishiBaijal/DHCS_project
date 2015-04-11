@@ -1,7 +1,9 @@
 package in.ac.iiitd.dhcs.focus.MainTabs;
 
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
@@ -24,6 +26,7 @@ import org.achartengine.renderer.XYSeriesRenderer;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import in.ac.iiitd.dhcs.focus.MainTabActivity;
 import in.ac.iiitd.dhcs.focus.R;
 
 /**
@@ -70,6 +73,12 @@ public class StatsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MainTabActivity.statsVisited++;
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("productivityModeVisited", Context.MODE_PRIVATE);
+        SharedPreferences.Editor startEditor = sharedPreferences.edit();
+        startEditor.putLong("visitProductivity", MainTabActivity.statsVisited);
+        System.out.println("The number of times stats has been visited is (onCreate method) "+MainTabActivity.statsVisited);
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -85,6 +94,8 @@ public class StatsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the activity_main_tab for this fragment
+
+
         mView = inflater.inflate(R.layout.fragment_stats, container, false);
         //openPieChart();
         //openScatterChart();
@@ -154,6 +165,19 @@ public class StatsFragment extends Fragment {
         GraphicalView ChartView;// = (GraphicalView) ChartFactory.getView(getActivity().getApplicationContext(), dataset, multiRenderer);
         ChartView = (GraphicalView) ChartFactory.getTimeChartView(getActivity().getApplicationContext(), dataset, multiRenderer,"dd-MMM-yyyy");
         chartContainer.addView(ChartView);
+    }
+
+    public void onResume()
+    {
+        super.onResume();
+        MainTabActivity.statsVisited++;
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("statsModeVisited", Context.MODE_PRIVATE);
+        SharedPreferences.Editor startEditor = sharedPreferences.edit();
+        startEditor.putLong("visitStats", MainTabActivity.statsVisited);
+
+
+
+        System.out.println("The number of times stats has been visited is "+MainTabActivity.statsVisited);
     }
 
 

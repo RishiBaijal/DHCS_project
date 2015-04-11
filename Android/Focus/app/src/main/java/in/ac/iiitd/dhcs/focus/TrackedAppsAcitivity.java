@@ -1,5 +1,7 @@
 package in.ac.iiitd.dhcs.focus;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -36,6 +38,22 @@ public class TrackedAppsAcitivity extends ActionBarActivity {
         listView = (ListView) findViewById(R.id.listView);
         trackedAppsListAdapter = new TrackedAppListAdapter(TrackedAppsAcitivity.this,R.layout.tracked_apps_list_item,userPackageInfoList);
         listView.setAdapter(trackedAppsListAdapter);
+
+        MainTabActivity.trackedVisited++;
+        SharedPreferences sharedPreferences = this.getSharedPreferences("trackedVisited", Context.MODE_PRIVATE);
+        SharedPreferences.Editor startEditor = sharedPreferences.edit();
+        startEditor.putLong("visitTracked", MainTabActivity.trackedVisited);
+        System.out.println("The number of times tracked apps screen has been visited is "+MainTabActivity.trackedVisited);
+    }
+
+    protected void onResume()
+    {
+        super.onResume();
+        MainTabActivity.trackedVisited++;
+        SharedPreferences sharedPreferences = this.getSharedPreferences("trackedVisited", Context.MODE_PRIVATE);
+        SharedPreferences.Editor startEditor = sharedPreferences.edit();
+        startEditor.putLong("visitTracked", MainTabActivity.trackedVisited);
+        System.out.println("The number of times tracked apps screen has been visited is "+MainTabActivity.trackedVisited);
     }
 
     public void filterSystemPackage()

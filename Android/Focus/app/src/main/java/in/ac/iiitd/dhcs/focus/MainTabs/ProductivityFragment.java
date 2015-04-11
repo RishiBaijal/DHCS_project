@@ -2,6 +2,7 @@ package in.ac.iiitd.dhcs.focus.MainTabs;
 
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -23,6 +24,7 @@ import in.ac.iiitd.dhcs.focus.CustomUIClasses.AppDistributionView;
 import in.ac.iiitd.dhcs.focus.CustomUIClasses.MeterView;
 import in.ac.iiitd.dhcs.focus.Database.DbContract;
 import in.ac.iiitd.dhcs.focus.Database.FocusDbHelper;
+import in.ac.iiitd.dhcs.focus.MainTabActivity;
 import in.ac.iiitd.dhcs.focus.Objects.ProductivityObject;
 import in.ac.iiitd.dhcs.focus.R;
 
@@ -75,6 +77,11 @@ public class ProductivityFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = getActivity();
+        MainTabActivity.productivityVisited++;
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("productivityModeVisited", Context.MODE_PRIVATE);
+        SharedPreferences.Editor startEditor = sharedPreferences.edit();
+        startEditor.putLong("visitProductivity", MainTabActivity.productivityVisited);
+        System.out.println("The number of times productivity has been visited is (onCreate method) "+MainTabActivity.productivityVisited);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -86,6 +93,12 @@ public class ProductivityFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
+        MainTabActivity.productivityVisited++;
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("productivityModeVisited", Context.MODE_PRIVATE);
+        SharedPreferences.Editor startEditor = sharedPreferences.edit();
+        startEditor.putLong("visitProductivity", MainTabActivity.productivityVisited);
+        System.out.println("The number of times productivity has been visited is "+MainTabActivity.productivityVisited);
+
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -101,6 +114,8 @@ public class ProductivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
+
         View inflaterView=inflater.inflate(R.layout.fragment_productivity, container, false);
         productivityMeterView=(MeterView)inflaterView.findViewById(R.id.productivityMeterView);
         ll=(LinearLayout)inflaterView.findViewById(R.id.productivityLinearLayout);
