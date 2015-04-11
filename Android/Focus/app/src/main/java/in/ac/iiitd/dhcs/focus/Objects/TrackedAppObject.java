@@ -12,17 +12,31 @@ public class TrackedAppObject {
         this.productivityScore=score;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        //return super.equals(o);
+       if(this.appName.equals(((TrackedAppObject) o).getName())
+               && (this.productivityScore==(((TrackedAppObject) o).getReading())))
+       {
+           return true;
+       }
+       else{
+           return false;
+       }
+    }
+
     public String getName(){
         return appName;
     }
-    public Float getReading(){
+    public float getReading(){
         return productivityScore;
     }
 
     public void putName(String appName){
         this.appName=appName;
     }
-    public void putReading(Float productivityScore){
+    public void putReading(float productivityScore){
         this.productivityScore=productivityScore;
     }
+
 }

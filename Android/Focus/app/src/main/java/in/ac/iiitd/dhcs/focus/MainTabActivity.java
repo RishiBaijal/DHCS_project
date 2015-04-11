@@ -16,17 +16,16 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.RelativeLayout;
 import android.view.View;
 import android.view.LayoutInflater;
 import android.widget.Toast;
+import android.widget.RelativeLayout;
 
 import java.util.Locale;
 
 import in.ac.iiitd.dhcs.focus.MainTabs.ProductivityFragment;
 import in.ac.iiitd.dhcs.focus.MainTabs.StatsFragment;
 import in.ac.iiitd.dhcs.focus.MainTabs.ZenFragment;
-import in.ac.iiitd.dhcs.focus.Objects.TrackedAppObject;
 import in.ac.iiitd.dhcs.focus.Service.FocusService;
 import in.ac.iiitd.dhcs.focus.Service.ScreenStateReceiver;
 
@@ -48,7 +47,7 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
      */
     public static boolean zenStarted = false;
     private static String TAG ="MainTabActivity";
-    ViewPager mViewPager;
+    public static ViewPager mViewPager;
     public SharedPreferences mPreferences;
     boolean showTut;
     Context mContext;
@@ -152,11 +151,7 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        else if (id == R.id.action_tracked_apps)
+        if (id == R.id.action_tracked_apps)
         {
             Intent intent = new Intent(this, TrackedAppsAcitivity.class);
             this.startActivity(intent);
