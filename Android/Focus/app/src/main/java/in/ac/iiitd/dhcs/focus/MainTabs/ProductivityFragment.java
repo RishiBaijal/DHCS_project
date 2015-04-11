@@ -261,6 +261,7 @@ public class ProductivityFragment extends Fragment {
         cursor.close();
         CommonUtils.ProductivityGoal = (long) (((float) TotalProductivity / (float) TotalDuration) * 100);
         textViewGoal.setText(String.valueOf((int)CommonUtils.ProductivityGoal) +"%");
+
         Log.v(TAG, TotalProductivity + " " + TotalDuration + " " + 100 * ((float) TotalProductivity / (float) TotalDuration));
         db.close();
     }
@@ -286,7 +287,7 @@ public class ProductivityFragment extends Fragment {
         }
         cursor.close();
         CommonUtils.ProductivityScore = (long) (((float) CommonUtils.TotalProductivity / (float) CommonUtils.TotalDuration) * 100);
-        Log.v(TAG, CommonUtils.TotalProductivity + " " + CommonUtils.TotalDuration + " " + 100 * ((float) CommonUtils.TotalProductivity / (float) CommonUtils.TotalDuration));
+        Log.v(TAG,"updateProd"+ CommonUtils.TotalProductivity + " " + CommonUtils.TotalDuration + " " + 100 * ((float) CommonUtils.TotalProductivity / (float) CommonUtils.TotalDuration));
 
         db.close();
     }

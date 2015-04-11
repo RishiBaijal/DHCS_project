@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
@@ -193,6 +194,14 @@ public class AppStatsActivity extends ActionBarActivity {
         dataset.addSeries(0,useTimeSeries);
         dataset.addSeries(1,prodTimeSeries);
 
+        for(ProductiveTimeStatObject ptso:statTimeList){
+//            Log.v(TAG,"addLabel");
+            long graphTime=ptso.getDate();
+            String text= DateFormat.format("dd/MM/yy", graphTime).toString();
+            mRenderer.addXTextLabel(graphTime, text);
+        }
+
+
         int marginY=1;
         mRenderer.setYAxisMax(useTimeSeries.getMaxY()+marginY);
         mRenderer.setYAxisMin(0);
@@ -260,7 +269,7 @@ public class AppStatsActivity extends ActionBarActivity {
 
         XYMultipleSeriesRenderer mRenderer = new XYMultipleSeriesRenderer();
 
-        mRenderer.setXLabels((int)(20 * density));
+        mRenderer.setXLabels(0);
         mRenderer.setMarginsColor(Color.argb(0xff, 0xf0, 0xf0, 0xf0));
 
         mRenderer.setXLabelsAlign(Paint.Align.RIGHT);

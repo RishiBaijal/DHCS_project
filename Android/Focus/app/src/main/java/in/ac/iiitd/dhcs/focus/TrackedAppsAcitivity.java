@@ -21,7 +21,6 @@ import java.util.List;
 import in.ac.iiitd.dhcs.focus.Database.DbContract;
 import in.ac.iiitd.dhcs.focus.Database.FocusDbHelper;
 import in.ac.iiitd.dhcs.focus.ListAdapters.TrackedAppListAdapter;
-import in.ac.iiitd.dhcs.focus.Objects.TrackedAppObject;
 import in.ac.iiitd.dhcs.focus.Objects.UserAppObject;
 
 
