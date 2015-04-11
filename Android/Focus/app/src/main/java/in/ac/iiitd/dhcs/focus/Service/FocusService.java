@@ -137,6 +137,7 @@ public class FocusService extends Service {
                     endtime = CommonUtils.unixTimestampToTime(timeInMillis);
                     duration = CommonUtils.getTimeDiff(starttime, endtime);
 
+
                     /* Only update db if it is under trackable apps & duration > 0*/
                     if(TrackedAppListAdapter.trackedapps.containsKey(currentapp) && duration > 0.0f) {
                         float Score = TrackedAppListAdapter.trackedapps.get(currentapp);
@@ -151,13 +152,15 @@ public class FocusService extends Service {
                         }
                     }
 
+//                    Log.v(TAG,starttime+" "+endtime);
+
                     starttime = endtime;
                     currentapp = appname;
                     currentpack = activePackages;
 
                 }
 
-                //Log.i(TAG,currentapp +appname+String.valueOf(currentapp.equalsIgnoreCase(appname)));
+//                Log.i(TAG,currentapp +appname+String.valueOf(currentapp.equalsIgnoreCase(appname)));
 
             }
 
