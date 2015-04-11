@@ -9,6 +9,9 @@ import android.util.Log;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import in.ac.iiitd.dhcs.focus.Objects.ProductivityObject;
@@ -18,6 +21,7 @@ public class CommonUtils {
     public static long ProductivityScore=0L;
     public static long TotalDuration=0L;
     public static long TotalProductivity=0L;
+    public static long ProductivityGoal=0L;
 
     /**
      * Convert unixtime in milliseconds to human readable data time of format dd/MM/yyyy HH:mm:ss
@@ -48,5 +52,11 @@ public class CommonUtils {
 		}
         
         return (float)((date2.getTime() - date1.getTime()));
+    }
+
+    public static int gettimeinhours(long t){
+        Calendar c = new GregorianCalendar();
+        c.setTime(new Date(t));
+        return c.get(Calendar.HOUR_OF_DAY);
     }
 }

@@ -2,11 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="in.ac.iiitd.dhcs.focus" >
 
-
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.GET_TASKS"/>
     <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
@@ -27,13 +27,30 @@
         </activity>
         <activity
             android:name=".TrackedAppsAcitivity"
-            android:label="@string/title_activity_tracked_apps_acitivity" >
+            android:label="@string/title_activity_tracked_apps_acitivity">
         </activity>
-        <activity android:name=".OverlayActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+        <activity
+            android:name=".OverlayActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
-        <service android:name=".Service.FocusService"></service>
+        <service android:name=".Service.FocusService" />
+
+        <activity
+            android:name=".AppStatsActivity"
+            android:label="@string/title_activity_app_stats"
+            android:parentActivityName=".MainTabActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="in.ac.iiitd.dhcs.focus.MainTabActivity" />
+        </activity>
+
+        <receiver android:name=".Service.BootStartUpReceiver" android:enabled="true" android:exported="true"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
     </application>
-
 
 </manifest>

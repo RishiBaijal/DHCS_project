@@ -1,17 +1,13 @@
-package in.ac.iiitd.dhcs.focus.MainTabs;
+package in.ac.iiitd.dhcs.focus;
 
-
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.support.v7.app.ActionBarActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.LinearLayout;
 
 import org.achartengine.ChartFactory;
@@ -27,119 +23,48 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import in.ac.iiitd.dhcs.focus.Database.StatsFetcher;
-import in.ac.iiitd.dhcs.focus.MainTabActivity;
-import in.ac.iiitd.dhcs.focus.R;
 import in.ac.iiitd.dhcs.focus.StatsObjects.ProductivePercentStatObject;
 import in.ac.iiitd.dhcs.focus.StatsObjects.ProductiveTimeStatObject;
 import in.ac.iiitd.dhcs.focus.StatsObjects.WeeklyPercentStatObject;
 import in.ac.iiitd.dhcs.focus.StatsObjects.WeeklyTimeStatObject;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link StatsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class StatsFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    private static final String TAG="StatsFragment";
+public class AppStatsActivity extends ActionBarActivity {
 
     ArrayList<ProductiveTimeStatObject> statTimeList=new ArrayList<ProductiveTimeStatObject>();
     ArrayList<ProductivePercentStatObject> statPercentList=new ArrayList<ProductivePercentStatObject>();
     WeeklyTimeStatObject[] weekTimeList=new WeeklyTimeStatObject[8];
     WeeklyPercentStatObject[] weekPercentList=new WeeklyPercentStatObject[8];
 
-    static Context context;
     Resources res;
     float density;
     
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-    private String[] mDays = new String[]{
-            "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat",
-            "Sun"  };
-
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment StatsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static StatsFragment newInstance(String param1, String param2) {
-        StatsFragment fragment = new StatsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    public StatsFragment() {
-        // Required empty public constructor
-    }
-
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        MainTabActivity.statsVisited++;
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("productivityModeVisited", Context.MODE_PRIVATE);
-        SharedPreferences.Editor startEditor = sharedPreferences.edit();
-        startEditor.putLong("visitProductivity", MainTabActivity.statsVisited);
-        System.out.println("The number of times stats has been visited is (onCreate method) "+MainTabActivity.statsVisited);
-
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-            Intent intent = getActivity().getIntent();
-        }
-
-    }
-
-    LinearLayout mLayout;
-    View rootView;
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the activity_main_tab for this fragment
-        rootView = inflater.inflate(R.layout.fragment_stats, container, false);
-
-        context=getActivity();
-        res = context.getResources();
+        setContentView(R.layout.activity_app_stats);
+        res = getResources();
         density = res.getDisplayMetrics().density;
-        return rootView;
     }
 
     @Override
     public void onResume(){
         super.onResume();
-        statTimeList=StatsFetcher.getProductiveTime(getActivity(), "");
-        statPercentList=StatsFetcher.getProductivePercent(getActivity(), "");
-        weekTimeList=StatsFetcher.getWeeklyTime(getActivity(), "");
-        weekPercentList=StatsFetcher.getWeeklyPercent(getActivity(),"");
+
+        Intent intent = getIntent();
+        String appName=intent.getStringExtra("appName");
+
+        setTitle(appName+" "+"Statistics");
+
+        statTimeList= StatsFetcher.getProductiveTime(this, appName);
+//        statPercentList=StatsFetcher.getProductivePercent(this, appName);
+        weekTimeList=StatsFetcher.getWeeklyTime(this, appName);
+//        weekPercentList=StatsFetcher.getWeeklyPercent(this,appName);
 
         openDurationChart();
         openWeeklyDurationChart();
-        openPercentChart();
-        openWeeklyPercentChart();
-
-
-        MainTabActivity.statsVisited++;
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("statsModeVisited", Context.MODE_PRIVATE);
-        SharedPreferences.Editor startEditor = sharedPreferences.edit();
-        startEditor.putLong("visitStats", MainTabActivity.statsVisited);
-
-
-
-        System.out.println("The number of times stats has been visited is "+MainTabActivity.statsVisited);
+//        openPercentChart();
+//        openWeeklyPercentChart();
     }
 
     private void openWeeklyDurationChart(){
@@ -198,7 +123,6 @@ public class StatsFragment extends Fragment {
 
         mRenderer.setBarSpacing((int)(2 * density));
         mRenderer.setXLabels(0);
-
 
         mRenderer.addSeriesRenderer(0,prodSeriesRenderer);
         int marginY=1;
@@ -338,7 +262,6 @@ public class StatsFragment extends Fragment {
 //        mRenderer.setInScroll(false);
 
         mRenderer.setZoomButtonsVisible(false);
-
         mRenderer.setYAxisMin(0);
         mRenderer.setChartTitleTextSize(val);
         mRenderer.setLabelsTextSize((float) (val*0.75));
@@ -360,12 +283,12 @@ public class StatsFragment extends Fragment {
 
     public void drawTimeChart(XYMultipleSeriesDataset dataset,XYMultipleSeriesRenderer mRenderer,int id){
 
-        final GraphicalView chartView = ChartFactory.getTimeChartView(context, dataset, mRenderer, "Duration All-Time");
+        final GraphicalView chartView = ChartFactory.getTimeChartView(this, dataset, mRenderer, "Duration All-Time");
 
 //        chartView.setOnTouchListener(new View.OnTouchListener() {
 //            ViewPager mViewPager= MainTabActivity.mViewPager;
 //            @SuppressLint("WrongViewCast")
-//            ViewParent mParent= (ViewParent)rootView.findViewById(R.id.durationChart);
+//            ViewParent mParent= (ViewParent)findViewById(R.id.durationChart);
 //
 //            float mFirstTouchX,mFirstTouchY;
 //
@@ -398,16 +321,16 @@ public class StatsFragment extends Fragment {
 //
 //        });
 
-        LinearLayout chart_container=(LinearLayout)rootView.findViewById(id);
+        LinearLayout chart_container=(LinearLayout)findViewById(id);
         chart_container.addView(chartView,0);
     }
 
     public void drawBarChart(XYMultipleSeriesDataset dataset,XYMultipleSeriesRenderer mRenderer,int id){
-        final GraphicalView chartView = ChartFactory.getBarChartView(context, dataset, mRenderer, BarChart.Type.DEFAULT);
+        final GraphicalView chartView = ChartFactory.getBarChartView(this, dataset, mRenderer, BarChart.Type.DEFAULT);
 //        chartView.setOnTouchListener(new View.OnTouchListener() {
 //            ViewPager mViewPager= MainTabActivity.mViewPager;
 //            @SuppressLint("WrongViewCast")
-//            ViewParent mParent= (ViewParent)rootView.findViewById(R.id.durationChart);
+//            ViewParent mParent= (ViewParent)findViewById(R.id.durationChart);
 //
 //            float mFirstTouchX,mFirstTouchY;
 //
@@ -420,7 +343,6 @@ public class StatsFragment extends Fragment {
 //                    mFirstTouchX = event.getX();
 //                    mFirstTouchY = event.getY();
 //                }
-//
 //
 //                if (event.getPointerCount() > 1
 //                        || (event.getX() < mFirstTouchX)
@@ -439,9 +361,29 @@ public class StatsFragment extends Fragment {
 //            }
 //
 //        });
-        LinearLayout chart_container=(LinearLayout)rootView.findViewById(id);
+        LinearLayout chart_container=(LinearLayout)findViewById(id);
         chart_container.addView(chartView,0);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_app_stats, menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 }
