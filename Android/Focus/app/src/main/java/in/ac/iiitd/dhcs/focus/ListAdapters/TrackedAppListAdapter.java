@@ -39,7 +39,7 @@ public class TrackedAppListAdapter extends ArrayAdapter<UserAppObject> {
     FocusDbHelper dbs;
     private PackageManager packageManager;
     private Context context;
-    private ArrayList<UserAppObject> userAppObjectList = new ArrayList<>();
+    public static ArrayList<UserAppObject> userAppObjectList = new ArrayList<UserAppObject>();
     public static List<TrackedAppObject> trackedAppObjectlist = new CopyOnWriteArrayList<>();
     public static HashMap<String,Float> trackedapps = new HashMap<String,Float>();
     private UserAppObject userAppObject = new UserAppObject();
@@ -54,6 +54,9 @@ public class TrackedAppListAdapter extends ArrayAdapter<UserAppObject> {
         packageManager = context.getPackageManager();
         dbs = new FocusDbHelper(context);
         Log.d(TAG,"userObjectListSize"+userAppObjectList.size());
+
+        //getting already tracking apps list from db//
+        getList();
     }
 
     public void addTrackedApp(String appName, float appProductivity)
@@ -106,8 +109,6 @@ public class TrackedAppListAdapter extends ArrayAdapter<UserAppObject> {
 
     @Override
     public View getView(final int position, View convertView, final ViewGroup parent) {
-        //getting already tracking apps list from db//
-        getList();
 
         View view = convertView;
         userAppObject = userAppObjectList.get(position);
@@ -124,6 +125,17 @@ public class TrackedAppListAdapter extends ArrayAdapter<UserAppObject> {
 
         String appName = packageManager.getApplicationLabel(userAppObject.getPackageInfo().applicationInfo).toString();
         boolean istracked = trackedapps.containsKey(appName);
+        boolean istrackedfromobj = false;
+        for(TrackedAppObject obj:trackedAppObjectlist){
+        Log.v(TAG,obj.getName() + "=" + appName);
+            if(obj.getName().equals(appName))
+            {
+                istrackedfromobj = true;
+                break;
+            }
+        }
+
+        //Log.v(TAG,"istracked="+String.valueOf(istracked) + " istrackedobj="+String.valueOf(istrackedfromobj));
 
         if(istracked){
             checkBoxTrack.setChecked(true);
@@ -162,6 +174,7 @@ public class TrackedAppListAdapter extends ArrayAdapter<UserAppObject> {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 //                    Log.d(TAG,String.valueOf(progress));
                 boolean checkedValue = userAppObjectList.get(position).getIsChecked();
+                userAppObjectList.get(position).setProdscore((float) progress);
                 textViewSeekValue.setText(String.valueOf(progress));
                 if(checkedValue)
                 {
@@ -224,9 +237,23 @@ public class TrackedAppListAdapter extends ArrayAdapter<UserAppObject> {
         String appName = cursor.getString(cursor.getColumnIndex(DbContract.TrackedAppEntry.APP_NAME));
         Float Score = cursor.getFloat(cursor.getColumnIndex(DbContract.TrackedAppEntry.PRODUCTIVITY_SCORE));
         trackedapps.put(appName,Score);
+
         }
         cursor.close();
         db.close(); // Closing database connection
+
+        add2UBList();
     }
 
+
+1    public void add2UBList(){
+        for(UserAppObject obj:userAppObjectList){
+        String appName = packageManager.getApplicationLabel(obj.getPackageInfo().applicationInfo).toString();
+        if(trackedapps.containsKey(appName)){
+            obj.setChecked(true);
+            obj.setProdscore(Math.round(trackedapps.get(appName)));
+            Log.v(TAG,appName);
+        }
+        }
+    }
 }

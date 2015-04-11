@@ -9,6 +9,7 @@ public class UserAppObject {
 
     private PackageInfo packageInfo;
     private boolean isChecked;
+    private float prodscore;
 
     public UserAppObject() {
 
@@ -30,6 +31,8 @@ public class UserAppObject {
         return isChecked;
     }
 
+    public float getProdscore() {return  prodscore; }
+
     public void setPackageInfo(PackageInfo packageInfo1)
     {
         this.packageInfo = packageInfo1;
@@ -39,5 +42,7 @@ public class UserAppObject {
     {
         this.isChecked = isChecked;
     }
+
+    public void setProdscore(float score) {this.prodscore = score;}
 
 }
