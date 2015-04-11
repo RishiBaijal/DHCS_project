@@ -70,6 +70,7 @@
                 android:layout_height="350dp"
                 android:id="@+id/percentChart"
                 android:orientation="vertical"
+                android:visibility="gone"
                 android:background="@color/background_floating_material_light"
                 >
 
@@ -92,6 +93,7 @@
                 android:layout_height="300dp"
                 android:id="@+id/percentBarChart"
                 android:orientation="vertical"
+                android:visibility="gone"
                 android:background="@color/background_floating_material_light"
                 >
 

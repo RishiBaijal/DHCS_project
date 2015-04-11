@@ -246,7 +246,7 @@ public class TrackedAppListAdapter extends ArrayAdapter<UserAppObject> {
     }
 
 
-1    public void add2UBList(){
+    public void add2UBList(){
         for(UserAppObject obj:userAppObjectList){
         String appName = packageManager.getApplicationLabel(obj.getPackageInfo().applicationInfo).toString();
         if(trackedapps.containsKey(appName)){
