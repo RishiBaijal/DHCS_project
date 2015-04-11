@@ -89,11 +89,11 @@ public class StatsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        MainTabActivity.statsVisited++;
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("productivityModeVisited", Context.MODE_PRIVATE);
-        SharedPreferences.Editor startEditor = sharedPreferences.edit();
-        startEditor.putLong("visitProductivity", MainTabActivity.statsVisited);
-        System.out.println("The number of times stats has been visited is (onCreate method) "+MainTabActivity.statsVisited);
+//        MainTabActivity.statsVisited++;
+//        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("productivityModeVisited", Context.MODE_PRIVATE);
+//        SharedPreferences.Editor startEditor = sharedPreferences.edit();
+//        startEditor.putLong("visitProductivity", MainTabActivity.statsVisited);
+//        System.out.println("The number of times stats has been visited is (onCreate method) "+MainTabActivity.statsVisited);
 
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);

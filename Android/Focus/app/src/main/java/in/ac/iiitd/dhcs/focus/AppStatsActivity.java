@@ -1,6 +1,8 @@
 package in.ac.iiitd.dhcs.focus;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -51,6 +53,8 @@ public class AppStatsActivity extends ActionBarActivity {
     public void onResume(){
         super.onResume();
 
+
+
         Intent intent = getIntent();
         String appName=intent.getStringExtra("appName");
 
@@ -65,6 +69,12 @@ public class AppStatsActivity extends ActionBarActivity {
         openWeeklyDurationChart();
 //        openPercentChart();
 //        openWeeklyPercentChart();
+
+        MainTabActivity.appStatsVisited++;
+        SharedPreferences sharedPreferences = this.getSharedPreferences("appStatsVisited", Context.MODE_PRIVATE);
+        SharedPreferences.Editor startEditor = sharedPreferences.edit();
+        startEditor.putLong("appStats", MainTabActivity.appStatsVisited);
+        System.out.println("The number of times productivity has been visited is "+MainTabActivity.appStatsVisited);
     }
 
     private void openWeeklyDurationChart(){

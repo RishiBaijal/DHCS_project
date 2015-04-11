@@ -54,10 +54,11 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
      */
 
 
+    public static String sent = "";
     public static int zenVisited = 0;
     public static int statsVisited = 0;
     public static int productivityVisited = 0;
-    public static int trackedAppsVisited = 0;
+    public static int appStatsVisited = 0;
     public static int trackedVisited = 0;
 
 
@@ -190,68 +191,6 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         }
     }
 
-//    protected void shareData()
-//    {
-//        Intent sendIntent = new Intent();
-//        sendIntent.setAction(Intent.ACTION_SEND);
-//        sendIntent.putExtra(Intent.EXTRA_TEXT, "Vedant sucks monkey testicles. ");
-//        sendIntent.setType("text/plain");
-//        startActivity(sendIntent);
-//    }
-
-
-
-//@Override
-//    protected void onPause()
-//    {
-//        super.onPause();
-//        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-//        boolean isScreenOn = powerManager.isScreenOn();
-//
-//        if (!isScreenOn)
-//        {
-//            System.out.println("The screen is locked");
-//        }
-//        else
-//        {
-//            if (zenStarted == true) {
-//                System.out.println("The value of zenStarted is "+zenStarted);
-//                System.out.println("The screen is unlocked.");
-//                Context context = getApplicationContext();
-//                CharSequence text = "The screen is unlocked. You are getting distracted!";
-//                int duration = Toast.LENGTH_LONG;
-//
-//                Toast.makeText(context, text, duration).show();
-//            }
-//        }
-//    }
-
-
-//    @Override
-//    protected void onPause()
-//    {
-//        super.onPause();
-//        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-//        boolean isScreenOn = powerManager.isScreenOn();
-//
-//        if (!isScreenOn)
-//        {
-//            System.out.println("The screen is locked");
-//        }
-//        else
-//        {
-//            if (zenStarted == true) {
-//                System.out.println("The value of zenStarted is "+zenStarted);
-//                System.out.println("The screen is unlocked.");
-//                Context context = getApplicationContext();
-//                CharSequence text = "The screen is unlocked. You are getting distracted!";
-//                int duration = Toast.LENGTH_LONG;
-//
-//                Toast.makeText(context, text, duration).show();
-//            }
-//        }
-//    }
-
 
     @Override
     protected void onResume() {
@@ -290,9 +229,25 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
 
         else if (id == R.id.action_share_data)
         {
+            sent = "";
+
+            ZenFragment zenFragment = new ZenFragment();
+//            SharedPreferences prefs = zenFragment.getActivity().getSharedPreferences("zenModeStarted", Context.MODE_PRIVATE);
+  //          long zenStart = prefs.getLong("startZen", ZenFragment.zenModeStartedNumber);
+    //        long zenComplete = prefs.getLong("completeZen", ZenFragment.zenModeCompleted);
+            sent = "Number of times Zen Mode was visited : " + MainTabActivity.zenVisited + "\n";
+            sent += "Number of times Productivity tab was visited : " + MainTabActivity.productivityVisited + "\n";
+            sent += "Number of times Statistics tab was visited : " + MainTabActivity.statsVisited + "\n";
+            sent += "Number of times the individual app statistics were accessed : " + MainTabActivity.appStatsVisited + "\n";
+        //    sent += "Number of times Zen Mode was finished : " + zenComplete;
+//            long mod = zenComplete % 100;
+//            if (mod == 0)
+//            {
+//                sent += "Congratulations! You have completed zen mode " + mod + " times. Awesome job!";
+//            }
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
-            sendIntent.putExtra(Intent.EXTRA_TEXT, "Vedant sucks monkey testicles. ");
+            sendIntent.putExtra(Intent.EXTRA_TEXT, sent);
             sendIntent.setType("text/plain");
             startActivity(sendIntent);
 

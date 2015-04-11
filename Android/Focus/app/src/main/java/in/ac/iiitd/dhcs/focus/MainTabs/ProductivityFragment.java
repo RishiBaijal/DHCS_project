@@ -81,11 +81,11 @@ public class ProductivityFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = getActivity();
-        MainTabActivity.productivityVisited++;
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("productivityModeVisited", Context.MODE_PRIVATE);
-        SharedPreferences.Editor startEditor = sharedPreferences.edit();
-        startEditor.putLong("visitProductivity", MainTabActivity.productivityVisited);
-        System.out.println("The number of times productivity has been visited is (onCreate method) "+MainTabActivity.productivityVisited);
+//        MainTabActivity.productivityVisited++;
+//        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("productivityModeVisited", Context.MODE_PRIVATE);
+//        SharedPreferences.Editor startEditor = sharedPreferences.edit();
+//        startEditor.putLong("visitProductivity", MainTabActivity.productivityVisited);
+//        System.out.println("The number of times productivity has been visited is (onCreate method) "+MainTabActivity.productivityVisited);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);

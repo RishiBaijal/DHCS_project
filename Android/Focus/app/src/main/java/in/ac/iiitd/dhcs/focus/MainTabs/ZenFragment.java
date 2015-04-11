@@ -90,11 +90,11 @@ public class ZenFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        MainTabActivity.zenVisited++;
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("zenModeVisited", Context.MODE_PRIVATE);
-        SharedPreferences.Editor startEditor = sharedPreferences.edit();
-        startEditor.putLong("visitZen", MainTabActivity.zenVisited);
-        System.out.println("The number of times zen has been visited is "+MainTabActivity.zenVisited);
+//        MainTabActivity.zenVisited++;
+//        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("zenModeVisited", Context.MODE_PRIVATE);
+//        SharedPreferences.Editor startEditor = sharedPreferences.edit();
+//        startEditor.putLong("visitZen", MainTabActivity.zenVisited);
+//        System.out.println("The number of times zen has been visited is "+MainTabActivity.zenVisited);
 
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
@@ -203,27 +203,32 @@ public class ZenFragment extends Fragment {
                 SharedPreferences sharedPreferences = getActivity().getSharedPreferences("zenModeStarted", Context.MODE_PRIVATE);
                 SharedPreferences.Editor startEditor = sharedPreferences.edit();
                 startEditor.putLong("startZen", zenModeStartedNumber);
+                SharedPreferences prefs = getActivity().getSharedPreferences("zenModeStarted", Context.MODE_PRIVATE);
+                long start = prefs.getLong("startZen", zenModeStartedNumber);
+
+                MainTabActivity.sent += "The number of times zen mode has been started so far is : " +start + "\n";
                 System.out.println("The value added to startZen is "+zenModeStartedNumber);
                 //Use this code to get the preferences back
-//                SharedPreferences prefs = this.getSharedPreferences("zenModeStarted", Context.MODE_PRIVATE);
-//                int score = prefs.getInt("startZen", 0); //0 is the default value
+//                 //0 is the default value
 
                 //This block is where we store the values
-                SharedPreferences prefs = getActivity().getSharedPreferences("millisInZen", Context.MODE_PRIVATE);
-                long milli = prefs.getLong("milliZen", zenModeMilliseconds);
+                SharedPreferences prefs1 = getActivity().getSharedPreferences("millisInZen", Context.MODE_PRIVATE);
+                long milli = prefs1.getLong("milliZen", zenModeMilliseconds);
                 System.out.println("The value retrieved for zenStopped is "+milli);
 
 
-
-                SharedPreferences sharedPreferences2 = getActivity().getSharedPreferences("completedZen", Context.MODE_PRIVATE);
-                SharedPreferences.Editor completedEditor = sharedPreferences2.edit();
-                completedEditor.putLong("completeZen", zenModeCompleted);
-                System.out.println("The number of times zen mode has been completed is "+zenModeCompleted);
 
 
                 setMillis=(((timePicker.getCurrentHour()*60+timePicker.getCurrentMinute())*60)*1000);
                 if (ZenTimer.timerFinished) {
                     zenModeCompleted++;
+
+                    SharedPreferences sharedPreferences2 = getActivity().getSharedPreferences("completedZen", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor completedEditor = sharedPreferences2.edit();
+                    completedEditor.putLong("completeZen", zenModeCompleted);
+                    MainTabActivity.sent += "The number of times zen mode has been completed is : "+zenModeCompleted + "\n";
+                    System.out.println("The number of times zen mode has been completed is : "+zenModeCompleted);
+
                     System.out.println("Zen mode completed.");
                     zenModeMilliseconds += setMillis;
                     SharedPreferences sharedPreferences1 = getActivity().getSharedPreferences("millisInZen", Context.MODE_PRIVATE);
@@ -245,39 +250,39 @@ public class ZenFragment extends Fragment {
             }
         });
 
-        stopBtn=(Button) inflaterView.findViewById(R.id.stopBtn);
-        stopBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(zenTimer!=null)
-                {
-                    MainTabActivity.zenStarted = false;
-                    MainTabActivity.wasInZen = false;
-                    zenModeStoppedNumber++;
-                    SharedPreferences sharedPreferences = getActivity().getSharedPreferences("stopZenMode", Context.MODE_PRIVATE);
-                    SharedPreferences.Editor stopEditor = sharedPreferences.edit();
-                    stopEditor.putLong("stopZen", zenModeStoppedNumber);
-                    System.out.println("The value added to stopZen is "+zenModeStoppedNumber);
-
-                    millisOnDistraction=(((timePicker.getCurrentHour()*60+timePicker.getCurrentMinute())*60)*1000);
-                    System.out.println("Millis on distraction: "+millisOnDistraction);
-                    zenModeMilliseconds +=(millisOnDistraction);
-                    System.out.println(millisOnDistraction);
-
-
-                    SharedPreferences sharedPreferences1 = getActivity().getSharedPreferences("millisInZen", Context.MODE_PRIVATE);
-                    SharedPreferences.Editor milliEditor = sharedPreferences1.edit();
-                    milliEditor.putLong("milliZen", zenModeMilliseconds);
-                    System.out.println("The value added to milliseconds is "+zenModeMilliseconds);
-                    //zenModeCompleted = zenModeStartedNumber - zenModeStoppedNumber - MainTabActivity.zenModeDistracted;
-                    zenTimer.cancel();
-                    viewFlipper.showNext();
-                    timePicker.setCurrentHour(0);
-                    timePicker.setCurrentMinute(0);
-                }
-
-            }
-        });
+//        stopBtn=(Button) inflaterView.findViewById(R.id.stopBtn);
+//        stopBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if(zenTimer!=null)
+//                {
+//                    MainTabActivity.zenStarted = false;
+//                    MainTabActivity.wasInZen = false;
+//                    zenModeStoppedNumber++;
+//                    SharedPreferences sharedPreferences = getActivity().getSharedPreferences("stopZenMode", Context.MODE_PRIVATE);
+//                    SharedPreferences.Editor stopEditor = sharedPreferences.edit();
+//                    stopEditor.putLong("stopZen", zenModeStoppedNumber);
+//                    System.out.println("The value added to stopZen is "+zenModeStoppedNumber);
+//
+//                    millisOnDistraction=(((timePicker.getCurrentHour()*60+timePicker.getCurrentMinute())*60)*1000);
+//                    System.out.println("Millis on distraction: "+millisOnDistraction);
+//                    zenModeMilliseconds +=(millisOnDistraction);
+//                    System.out.println(millisOnDistraction);
+//
+//
+//                    SharedPreferences sharedPreferences1 = getActivity().getSharedPreferences("millisInZen", Context.MODE_PRIVATE);
+//                    SharedPreferences.Editor milliEditor = sharedPreferences1.edit();
+//                    milliEditor.putLong("milliZen", zenModeMilliseconds);
+//                    System.out.println("The value added to milliseconds is "+zenModeMilliseconds);
+//                    //zenModeCompleted = zenModeStartedNumber - zenModeStoppedNumber - MainTabActivity.zenModeDistracted;
+//                    zenTimer.cancel();
+//                    viewFlipper.showNext();
+//                    timePicker.setCurrentHour(0);
+//                    timePicker.setCurrentMinute(0);
+//                }
+//
+//            }
+//        });
     }
 
 }
