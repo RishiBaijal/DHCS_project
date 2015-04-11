@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -241,6 +242,13 @@ public class StatsFragment extends Fragment {
         dataset.addSeries(0,useTimeSeries);
         dataset.addSeries(1,prodTimeSeries);
 
+        for(ProductiveTimeStatObject ptso:statTimeList){
+//            Log.v(TAG,"addLabel");
+            long graphTime=ptso.getDate();
+            String text=DateFormat.format("dd/MM/yy",graphTime).toString();
+            mRenderer.addXTextLabel(graphTime, text);
+        }
+
         int marginY=1;
         mRenderer.setYAxisMax(useTimeSeries.getMaxY()+marginY);
         mRenderer.setYAxisMin(0);
@@ -278,6 +286,13 @@ public class StatsFragment extends Fragment {
         final XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
         dataset.addSeries(0,prodTimeSeries);
 
+        for(ProductivePercentStatObject ppso:statPercentList){
+//            Log.v(TAG,"addLabel");
+            long graphTime=ppso.getDate();
+            String text=DateFormat.format("dd/MM/yy",graphTime).toString();
+            mRenderer.addXTextLabel(graphTime, text);
+            }
+
         mRenderer.setXAxisMax(prodTimeSeries.getMaxX());
         mRenderer.setXAxisMin(prodTimeSeries.getMinX());
 
@@ -308,7 +323,7 @@ public class StatsFragment extends Fragment {
 
         XYMultipleSeriesRenderer mRenderer = new XYMultipleSeriesRenderer();
 
-        mRenderer.setXLabels((int)(20 * density));
+        mRenderer.setXLabels(0);
         mRenderer.setMarginsColor(Color.argb(0xff, 0xf0, 0xf0, 0xf0));
 
         mRenderer.setXLabelsAlign(Paint.Align.RIGHT);
@@ -323,9 +338,9 @@ public class StatsFragment extends Fragment {
 
         mRenderer.setYAxisMin(0);
         mRenderer.setChartTitleTextSize(val);
-        mRenderer.setLabelsTextSize((float) (val*0.75));
-        mRenderer.setLegendTextSize((float) (val*0.75));
-        mRenderer.setAxisTitleTextSize((float) (val*0.75));
+        mRenderer.setLabelsTextSize((float) (val * 0.75));
+        mRenderer.setLegendTextSize((float) (val * 0.75));
+        mRenderer.setAxisTitleTextSize((float) (val * 0.75));
         mRenderer.setLabelsColor(getResources().getColor(R.color.graph_text));
         mRenderer.setYLabelsColor(0, getResources().getColor(R.color.graph_text));
         mRenderer.setXLabelsColor(getResources().getColor(R.color.graph_text));
@@ -334,7 +349,7 @@ public class StatsFragment extends Fragment {
         mRenderer.setYLabelsAlign(Paint.Align.RIGHT);
         mRenderer.setChartTitle(chartTitle);
         mRenderer.setShowGrid(true);
-        int[] margins={(int)(40 * density),(int)(40 * density),(int)(60 * density),(int)(10 * density)};
+        int[] margins={(int)(40 * density),(int)(40 * density),(int)(80 * density),(int)(10 * density)};
         mRenderer.setMargins(margins);
 
         return mRenderer;
