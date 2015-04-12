@@ -60,6 +60,9 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
     public static int productivityVisited = 0;
     public static int appStatsVisited = 0;
     public static int trackedVisited = 0;
+    public static long zenActivated = 0;
+    public static long zenCompleted = 0;
+    public static long millisInZen = 0;
 
 
     public static boolean zenStarted = false;
@@ -239,6 +242,10 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
             sent += "Number of times Productivity tab was visited : " + MainTabActivity.productivityVisited + "\n";
             sent += "Number of times Statistics tab was visited : " + MainTabActivity.statsVisited + "\n";
             sent += "Number of times the individual app statistics were accessed : " + MainTabActivity.appStatsVisited + "\n";
+            sent += "Number of times the Tracked apps were viewed : " + MainTabActivity.trackedVisited + "\n";
+            sent += "Number of times Zen Mode was activated : " + MainTabActivity.zenActivated + "\n";
+            sent += "Number of times Zen Mode was completed : " + MainTabActivity.zenCompleted + "\n";
+            sent += "Number of milli-seconds spent in Zen Mode : " + MainTabActivity.millisInZen + "\n";
         //    sent += "Number of times Zen Mode was finished : " + zenComplete;
 //            long mod = zenComplete % 100;
 //            if (mod == 0)

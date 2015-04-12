@@ -17,14 +17,14 @@
         android:layout_centerHorizontal="true" />
 
 
-    <!--<Button-->
-        <!--style="?android:attr/buttonStyleSmall"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="Stop"-->
-        <!--android:id="@+id/stopBtn"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_centerHorizontal="true" />-->
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stop"
+        android:id="@+id/stopBtn"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 
     <ViewFlipper
         android:layout_width="fill_parent"
