@@ -2,7 +2,12 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+<<<<<<< HEAD
       <module fileurl="file://$PROJECT_DIR$/.idea/DHCS_project.iml" filepath="$PROJECT_DIR$/.idea/DHCS_project.iml" />
+=======
+      <module fileurl="file://$PROJECT_DIR$/Android/Focus/app/src/androidTest/androidTest.iml" filepath="$PROJECT_DIR$/Android/Focus/app/src/androidTest/androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Android/Focus/app/src/main/main.iml" filepath="$PROJECT_DIR$/Android/Focus/app/src/main/main.iml" />
+>>>>>>> daa91155d2f1b2f392badd8d047c1b56a7756704
     </modules>
   </component>
 </project>

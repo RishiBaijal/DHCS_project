@@ -17,6 +17,17 @@ import android.net.Uri;
 import android.content.Context;
 
 import android.os.Bundle;
+import android.annotation.SuppressLint;
+import android.app.ActivityManager;
+import android.app.KeyguardManager;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Bundle;
+import android.os.CountDownTimer;
+
 import android.os.PowerManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
@@ -28,6 +39,25 @@ import android.widget.Button;
 import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
+
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
+
+import android.app.Activity;
+import android.app.IntentService;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyEvent;
+import java.util.concurrent.TimeUnit;
+import java.util.*;
 
 import in.ac.iiitd.dhcs.focus.CustomUIClasses.TimerView;
 import in.ac.iiitd.dhcs.focus.MainTabActivity;
@@ -60,10 +90,17 @@ public class ZenFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    EditText timePicker1;
+
+    View inflateView;
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
+
+    Button btnStart, btnStop;
+    TextView textViewTime;
 
     /**
      * Use this factory method to create a new instance of
@@ -80,6 +117,7 @@ public class ZenFragment extends Fragment {
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
+
         return fragment;
     }
 
@@ -96,10 +134,16 @@ public class ZenFragment extends Fragment {
 //        startEditor.putLong("visitZen", MainTabActivity.zenVisited);
 //        System.out.println("The number of times zen has been visited is "+MainTabActivity.zenVisited);
 
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
+
+
         }
+
+
+
     }
 
     @Override
@@ -335,4 +379,33 @@ public class ZenFragment extends Fragment {
         });
     }
 
+}
+
+
+class ScreenBroadcastReceiver extends BroadcastReceiver
+{
+    boolean isScreenOn;
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        if (intent.getAction().equals(Intent.ACTION_USER_PRESENT)) {
+            Log.d("TAG", "The motherfucking screen is on.");
+            isScreenOn = true;
+
+        } else if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)){
+            Log.d("TAG", "The buttfucking screen is off.");
+            isScreenOn=false;
+        }
+
+        else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON))
+        {
+            KeyguardManager km = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
+            boolean locked = km.inKeyguardRestrictedInputMode();
+            isScreenOn=locked;
+        }
+    }
+
+    public boolean isScreenOn()
+    {
+        return isScreenOn;
+    }
 }
