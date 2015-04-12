@@ -65,7 +65,7 @@ public class TrackedAppsAcitivity extends ActionBarActivity {
         for(int i = 0; i<packageInfoList.size(); ++i)
         {
             PackageInfo packageInfo1 = packageInfoList.get(i);
-            if(!(isSystemPackage(packageInfo1)))
+            if(!(isSystemPackage(packageInfo1)) && !(packageInfo1.packageName.equals(getApplicationContext().getPackageName())))
             {
                 UserAppObject userAppObject = new UserAppObject(packageInfo1,false);
                 Log.d(TAG, "check:"+packageManager.getApplicationLabel(userAppObject.getPackageInfo().applicationInfo).toString());

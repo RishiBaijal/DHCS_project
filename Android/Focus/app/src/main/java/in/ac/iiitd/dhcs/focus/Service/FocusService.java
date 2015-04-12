@@ -13,6 +13,7 @@ import in.ac.iiitd.dhcs.focus.Database.DbContract;
 import in.ac.iiitd.dhcs.focus.Database.DbContract.ProductivityEntry;
 import in.ac.iiitd.dhcs.focus.Database.FocusDbHelper;
 import in.ac.iiitd.dhcs.focus.ListAdapters.TrackedAppListAdapter;
+import in.ac.iiitd.dhcs.focus.MainTabActivity;
 import in.ac.iiitd.dhcs.focus.R;
 
 import android.app.ActivityManager;
@@ -351,10 +352,20 @@ public class FocusService extends Service {
 
         Log.v(TAG,String.valueOf(CommonUtils.gettimeinhours(System.currentTimeMillis())));
         //Fire notification once Score > Goal
-        if(CommonUtils.ProductivityScore>CommonUtils.ProductivityGoal &&
+        Log.v(TAG,"Goal =" + String.valueOf(CommonUtils.ProductivityGoal) +" " + String.valueOf(CommonUtils.ProductivityScore));
+        if(CommonUtils.ProductivityScore>=CommonUtils.ProductivityGoal &&
                 CommonUtils.gettimeinhours(System.currentTimeMillis())==23 &&
                 counterflag==true){
-            PushNotification();
+            String msg = "Good Job! Your day has been productive";
+            PushNotification(msg);
+            counterflag = false;
+        }
+        //Firing a negative notification
+        else if(CommonUtils.ProductivityScore<CommonUtils.ProductivityGoal &&
+                CommonUtils.gettimeinhours(System.currentTimeMillis())==23 &&
+                counterflag==true){
+            String msg = "You were distracted! Better luck tomorrow";
+            PushNotification(msg);
             counterflag = false;
         }
 
@@ -382,14 +393,14 @@ public class FocusService extends Service {
         db.close(); // Closing database connection
     }
 
-    public void PushNotification(){
+    public void PushNotification(String msg){
 
         int pid = android.os.Process.myPid();
-        Intent notiintent = new Intent(this, FocusService.class);
+        Intent notiintent = new Intent(this, MainTabActivity.class);
 
         notiintent.setAction(Long.toString(System.currentTimeMillis()));
         int requestID = (int) System.currentTimeMillis();
-        PendingIntent pIntent = PendingIntent.getService(this, requestID, notiintent,PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pIntent = PendingIntent.getActivity(this, requestID, notiintent,PendingIntent.FLAG_UPDATE_CURRENT);
 
         // Sets an ID for the notification, so it can be updated
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -401,7 +412,7 @@ public class FocusService extends Service {
 
         mNotifyBuilder.setSmallIcon(R.mipmap.ic_notification);
 
-        mNotifyBuilder.setContentText("Good Job! Your day has been productive");
+        mNotifyBuilder.setContentText(msg);
 
         Notification temp = mNotifyBuilder.build();
 
