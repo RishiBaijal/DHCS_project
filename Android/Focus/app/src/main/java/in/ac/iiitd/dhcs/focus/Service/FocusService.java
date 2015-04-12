@@ -349,6 +349,7 @@ public class FocusService extends Service {
 
         Log.v(TAG,String.valueOf(CommonUtils.gettimeinhours(System.currentTimeMillis())));
         //Fire notification once Score > Goal
+        Log.v(TAG,"Goal =" + String.valueOf(CommonUtils.ProductivityGoal) +" " + String.valueOf(CommonUtils.ProductivityScore));
         if(CommonUtils.ProductivityScore>=CommonUtils.ProductivityGoal &&
                 CommonUtils.gettimeinhours(System.currentTimeMillis())==23 &&
                 counterflag==true){
