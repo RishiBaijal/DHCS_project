@@ -166,6 +166,8 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
                 if (ZenTimer.timerFinished) {
                     ZenFragment.zenModeCompleted++;
 
+
+
                     Toast.makeText(this.getApplicationContext(), "Zen Mode Completed! Congratulations!", Toast.LENGTH_LONG).show();
                     NotificationManager notificationManager1 = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
                     Intent intent1 = new Intent(this.getApplicationContext(), MainTabActivity.class);
