@@ -35,6 +35,7 @@ import in.ac.iiitd.dhcs.focus.MainTabs.StatsFragment;
 import in.ac.iiitd.dhcs.focus.MainTabs.ZenFragment;
 import in.ac.iiitd.dhcs.focus.Service.FocusService;
 import in.ac.iiitd.dhcs.focus.Service.ScreenStateReceiver;
+import in.ac.iiitd.dhcs.focus.StatsObjects.HelpActivity;
 
 
 public class MainTabActivity extends ActionBarActivity implements ActionBar.TabListener {
@@ -270,6 +271,12 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         if (id == R.id.action_tracked_apps)
         {
             Intent intent = new Intent(this, TrackedAppsAcitivity.class);
+            this.startActivity(intent);
+        }
+
+        else if (id == R.id.about_this_app)
+        {
+            Intent intent = new Intent(this, HelpActivity.class);
             this.startActivity(intent);
         }
 

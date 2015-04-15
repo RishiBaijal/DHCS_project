@@ -273,6 +273,9 @@ public class ZenFragment extends Fragment {
 
                 if (ZenTimer.timerFinished) {
                     zenModeCompleted++;
+
+                    startBtn.setVisibility(inflaterView.VISIBLE);
+                    stopBtn.setVisibility(inflaterView.INVISIBLE);
 //
 //                    Toast.makeText(getActivity().getApplicationContext(), "Zen Mode Completed! Congratulations!", Toast.LENGTH_LONG).show();
 //                    NotificationManager notificationManager1 = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);

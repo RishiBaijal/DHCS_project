@@ -18,5 +18,6 @@
     <string name="tracked_apps_list_check_box">Track this app\'s usage?</string>
     <string name="title_activity_app_stats">AppStatsActivity</string>
     <string name="action_share_data_string">Share</string>
+    <string name="title_activity_help">HelpActivity</string>
 
 </resources>
