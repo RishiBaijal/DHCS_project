@@ -273,6 +273,25 @@ public class ZenFragment extends Fragment {
 
                 if (ZenTimer.timerFinished) {
                     zenModeCompleted++;
+//
+//                    Toast.makeText(getActivity().getApplicationContext(), "Zen Mode Completed! Congratulations!", Toast.LENGTH_LONG).show();
+//                    NotificationManager notificationManager1 = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+//                    Intent intent1 = new Intent(getActivity().getApplicationContext(), MainTabActivity.class);
+//                    NotificationCompat.Builder mBuilder1=
+//                            new NotificationCompat.Builder(getActivity().getApplicationContext()).setSmallIcon(R.mipmap.ic_launcher).setContentTitle("ZEN MODE COMPLETED.").setContentText("Congratulations!");
+//                    TaskStackBuilder stackBuilder1 = TaskStackBuilder.create(getActivity().getApplicationContext());
+//                    stackBuilder1.addParentStack(MainTabActivity.class);
+//                    stackBuilder1.addNextIntent(intent1);
+//                    PendingIntent resultPendingIntent1 = stackBuilder1.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+//                    mBuilder1.setLights(Color.BLUE, 500, 500);
+//                    mBuilder1.setVibrate(pattern);
+//                    mBuilder1.setAutoCancel(false);
+//                    mBuilder1.setOngoing(true);
+//                    mBuilder1.setStyle(new NotificationCompat.InboxStyle());
+//                    mBuilder1.setContentIntent(resultPendingIntent1);
+//                    notificationManager1.notify(0, mBuilder1.build());
+
+
 
                     SharedPreferences sharedPreferences2 = getActivity().getSharedPreferences("completedZen", Context.MODE_PRIVATE);
                     SharedPreferences.Editor completedEditor = sharedPreferences2.edit();
@@ -292,7 +311,7 @@ public class ZenFragment extends Fragment {
 
                 else// This means the user got distracted
                 {
-
+                    System.out.println("Timer still on!");
                 }
 
 
