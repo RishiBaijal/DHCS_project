@@ -7,4 +7,10 @@
     <item android:id="@+id/action_share_data"
         android:title="@string/action_share_data_string"
         android:orderInCategory="99" app:showAsAction="never"/>
+
+
+    <item android:id = "@+id/about_this_app"
+        android:title = "About this app"
+        android:orderInCategory="98"
+        app:showAsAction = "never"/>
 </menu>

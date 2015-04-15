@@ -273,6 +273,9 @@ public class ZenFragment extends Fragment {
 
                 if (ZenTimer.timerFinished) {
                     zenModeCompleted++;
+
+                    startBtn.setVisibility(inflaterView.VISIBLE);
+                    stopBtn.setVisibility(inflaterView.INVISIBLE);
 //
 //                    Toast.makeText(getActivity().getApplicationContext(), "Zen Mode Completed! Congratulations!", Toast.LENGTH_LONG).show();
 //                    NotificationManager notificationManager1 = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
@@ -336,95 +339,74 @@ public class ZenFragment extends Fragment {
         stopBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(zenTimer!=null)
-                {
-                    long[] pattern = {500,500,500,500,500,500,500,500,500};
-                    stopBtn.setVisibility(inflaterView.INVISIBLE);
-                    startBtn.setVisibility(inflaterView.VISIBLE);
+                if(zenTimer!=null) {
+                    if (ZenTimer.timerFinished == false) {
+                        long[] pattern = {500, 500, 500, 500, 500, 500, 500, 500, 500};
+                        stopBtn.setVisibility(inflaterView.INVISIBLE);
+                        startBtn.setVisibility(inflaterView.VISIBLE);
 
-                    MainTabActivity.zenStarted = false;
-                    MainTabActivity.wasInZen = false;
-                    zenModeStoppedNumber++;
-                    SharedPreferences sharedPreferences = getActivity().getSharedPreferences("stopZenMode", Context.MODE_PRIVATE);
-                    SharedPreferences.Editor stopEditor = sharedPreferences.edit();
-                    stopEditor.putLong("stopZen", zenModeStoppedNumber);
-                    System.out.println("The value added to stopZen is "+zenModeStoppedNumber);
+                        MainTabActivity.zenStarted = false;
+                        MainTabActivity.wasInZen = false;
+                        zenModeStoppedNumber++;
+                        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("stopZenMode", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor stopEditor = sharedPreferences.edit();
+                        stopEditor.putLong("stopZen", zenModeStoppedNumber);
+                        System.out.println("The value added to stopZen is " + zenModeStoppedNumber);
 
-                    millisOnDistraction=(((timePicker.getCurrentHour()*60+timePicker.getCurrentMinute())*60)*1000);
-                    System.out.println("Millis on distraction: "+millisOnDistraction);
-                    zenModeMilliseconds +=(millisOnDistraction);
-                    System.out.println(millisOnDistraction);
-
-
-                    SharedPreferences sharedPreferences1 = getActivity().getSharedPreferences("millisInZen", Context.MODE_PRIVATE);
-                    SharedPreferences.Editor milliEditor = sharedPreferences1.edit();
-                    milliEditor.putLong("milliZen", zenModeMilliseconds);
-                    System.out.println("The value added to milliseconds is "+zenModeMilliseconds);
-                    //zenModeCompleted = zenModeStartedNumber - zenModeStoppedNumber - MainTabActivity.zenModeDistracted;
+                        millisOnDistraction = (((timePicker.getCurrentHour() * 60 + timePicker.getCurrentMinute()) * 60) * 1000);
+                        System.out.println("Millis on distraction: " + millisOnDistraction);
+                        zenModeMilliseconds += (millisOnDistraction);
+                        System.out.println(millisOnDistraction);
 
 
-                    NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
-                    Intent intent = new Intent(getActivity().getApplicationContext(), MainTabActivity.class);
-                    NotificationCompat.Builder mBuilder =
-                            new NotificationCompat.Builder(getActivity().getApplicationContext()).setSmallIcon(R.mipmap.ic_launcher).setContentTitle("ZEN MODE STOPPED!").setContentText("Zen mode force stopped by the user.");
-                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(getActivity().getApplicationContext());
-                    stackBuilder.addParentStack(MainTabActivity.class);
-                    stackBuilder.addNextIntent(intent);
-                    PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-                    //Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                    //mBuilder.setSound(alarmSound);
-                    mBuilder.setLights(Color.BLUE, 500, 500);
-                    mBuilder.setVibrate(pattern);
-                    mBuilder.setAutoCancel(false);
-                    mBuilder.setStyle(new NotificationCompat.InboxStyle());
-                    mBuilder.setContentIntent(resultPendingIntent);
-                    notificationManager.notify(0, mBuilder.build());
+                        SharedPreferences sharedPreferences1 = getActivity().getSharedPreferences("millisInZen", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor milliEditor = sharedPreferences1.edit();
+                        milliEditor.putLong("milliZen", zenModeMilliseconds);
+                        System.out.println("The value added to milliseconds is " + zenModeMilliseconds);
+                        //zenModeCompleted = zenModeStartedNumber - zenModeStoppedNumber - MainTabActivity.zenModeDistracted;
 
 
-                    Context context = getActivity().getApplicationContext();
-                    CharSequence text = "Zen mode has been force stopped.";
-                    int duration = Toast.LENGTH_LONG;
-                    Toast.makeText(context, text, duration).show();
+                        NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+                        Intent intent = new Intent(getActivity().getApplicationContext(), MainTabActivity.class);
+                        NotificationCompat.Builder mBuilder =
+                                new NotificationCompat.Builder(getActivity().getApplicationContext()).setSmallIcon(R.mipmap.ic_launcher).setContentTitle("ZEN MODE STOPPED!").setContentText("Zen mode force stopped by the user.");
+                        TaskStackBuilder stackBuilder = TaskStackBuilder.create(getActivity().getApplicationContext());
+                        stackBuilder.addParentStack(MainTabActivity.class);
+                        stackBuilder.addNextIntent(intent);
+                        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                        //Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                        //mBuilder.setSound(alarmSound);
+                        mBuilder.setLights(Color.BLUE, 500, 500);
+                        mBuilder.setVibrate(pattern);
+                        mBuilder.setAutoCancel(false);
+                        mBuilder.setStyle(new NotificationCompat.InboxStyle());
+                        mBuilder.setContentIntent(resultPendingIntent);
+                        notificationManager.notify(0, mBuilder.build());
 
 
+                        Context context = getActivity().getApplicationContext();
+                        CharSequence text = "Zen mode has been force stopped.";
+                        int duration = Toast.LENGTH_LONG;
+                        Toast.makeText(context, text, duration).show();
 
-                    zenTimer.cancel();
-                    viewFlipper.showNext();
-                    timePicker.setCurrentHour(0);
-                    timePicker.setCurrentMinute(0);
+
+                        zenTimer.cancel();
+                        viewFlipper.showNext();
+                        timePicker.setCurrentHour(0);
+                        timePicker.setCurrentMinute(0);
+                    }
                 }
+                //else
+                {
+                    Toast.makeText(getActivity().getApplicationContext(), "You have completed Zen Mode.", Toast.LENGTH_LONG).show();
+                    startBtn.setVisibility(inflaterView.VISIBLE);
+                    stopBtn.setVisibility(inflaterView.INVISIBLE);
+
+                }
+
 
             }
         });
     }
 
-}
-
-
-class ScreenBroadcastReceiver extends BroadcastReceiver
-{
-    boolean isScreenOn;
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals(Intent.ACTION_USER_PRESENT)) {
-            Log.d("TAG", "The motherfucking screen is on.");
-            isScreenOn = true;
-
-        } else if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)){
-            Log.d("TAG", "The buttfucking screen is off.");
-            isScreenOn=false;
-        }
-
-        else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON))
-        {
-            KeyguardManager km = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
-            boolean locked = km.inKeyguardRestrictedInputMode();
-            isScreenOn=locked;
-        }
-    }
-
-    public boolean isScreenOn()
-    {
-        return isScreenOn;
-    }
 }

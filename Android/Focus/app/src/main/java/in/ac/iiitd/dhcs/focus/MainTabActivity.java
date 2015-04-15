@@ -35,6 +35,7 @@ import in.ac.iiitd.dhcs.focus.MainTabs.StatsFragment;
 import in.ac.iiitd.dhcs.focus.MainTabs.ZenFragment;
 import in.ac.iiitd.dhcs.focus.Service.FocusService;
 import in.ac.iiitd.dhcs.focus.Service.ScreenStateReceiver;
+import in.ac.iiitd.dhcs.focus.StatsObjects.HelpActivity;
 
 
 public class MainTabActivity extends ActionBarActivity implements ActionBar.TabListener {
@@ -165,6 +166,8 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
                 if (ZenTimer.timerFinished) {
                     ZenFragment.zenModeCompleted++;
 
+
+
                     Toast.makeText(this.getApplicationContext(), "Zen Mode Completed! Congratulations!", Toast.LENGTH_LONG).show();
                     NotificationManager notificationManager1 = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
                     Intent intent1 = new Intent(this.getApplicationContext(), MainTabActivity.class);
@@ -270,6 +273,12 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         if (id == R.id.action_tracked_apps)
         {
             Intent intent = new Intent(this, TrackedAppsAcitivity.class);
+            this.startActivity(intent);
+        }
+
+        else if (id == R.id.about_this_app)
+        {
+            Intent intent = new Intent(this, HelpActivity.class);
             this.startActivity(intent);
         }
 
