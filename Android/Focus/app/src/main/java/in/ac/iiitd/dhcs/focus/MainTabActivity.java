@@ -160,33 +160,76 @@ public class MainTabActivity extends ActionBarActivity implements ActionBar.TabL
         else
         {
             if (zenStarted == true) {//if this is executed, the user got distracted
+
                 long[] pattern = {500,500,500,500,500,500,500,500,500};
+                if (ZenTimer.timerFinished) {
+                    ZenFragment.zenModeCompleted++;
 
-                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                Intent intent = new Intent(getApplicationContext(), MainTabActivity.class);
-                NotificationCompat.Builder mBuilder =
-                        new NotificationCompat.Builder(getApplicationContext()).setSmallIcon(R.drawable.abc_cab_background_top_mtrl_alpha).setContentTitle("ZEN MODE OVER!!").setContentText("Seems like you got distracted. Better luck next time!!");
-                TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
-                stackBuilder.addParentStack(MainTabActivity.class);
-                stackBuilder.addNextIntent(intent);
-                PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-                mBuilder.setAutoCancel(false);
-                //Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                //mBuilder.setSound(alarmSound);
-                mBuilder.setLights(Color.RED, 500, 500);
-                mBuilder.setVibrate(pattern);
-                mBuilder.setStyle(new NotificationCompat.InboxStyle());
-                //mBuilder.setOngoing(true);
-                mBuilder.setContentIntent(resultPendingIntent);
-                notificationManager.notify(0, mBuilder.build());
+                    Toast.makeText(this.getApplicationContext(), "Zen Mode Completed! Congratulations!", Toast.LENGTH_LONG).show();
+                    NotificationManager notificationManager1 = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+                    Intent intent1 = new Intent(this.getApplicationContext(), MainTabActivity.class);
+                    NotificationCompat.Builder mBuilder1=
+                            new NotificationCompat.Builder(this.getApplicationContext()).setSmallIcon(R.mipmap.ic_launcher).setContentTitle("ZEN MODE COMPLETED.").setContentText("Congratulations!");
+                    TaskStackBuilder stackBuilder1 = TaskStackBuilder.create(this.getApplicationContext());
+                    stackBuilder1.addParentStack(MainTabActivity.class);
+                    stackBuilder1.addNextIntent(intent1);
+                    PendingIntent resultPendingIntent1 = stackBuilder1.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                    mBuilder1.setLights(Color.BLUE, 500, 500);
+                    mBuilder1.setVibrate(pattern);
+                    mBuilder1.setAutoCancel(false);
+                    mBuilder1.setOngoing(false);
+                    mBuilder1.setStyle(new NotificationCompat.InboxStyle());
+                    mBuilder1.setContentIntent(resultPendingIntent1);
+                    notificationManager1.notify(0, mBuilder1.build());
 
-                System.out.println("The value of zenStarted is "+zenStarted);
-                System.out.println("The screen is unlocked.");
+
+
+                    SharedPreferences sharedPreferences2 = this.getSharedPreferences("completedZen", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor completedEditor = sharedPreferences2.edit();
+                    completedEditor.putLong("completeZen", ZenFragment.zenModeCompleted);
+                    MainTabActivity.sent += "The number of times zen mode has been completed is : "+ZenFragment.zenModeCompleted + "\n";
+                    System.out.println("The number of times zen mode has been completed is : "+ ZenFragment.zenModeCompleted);
+                    MainTabActivity.zenCompleted = ZenFragment.zenModeCompleted;
+
+                    System.out.println("Zen mode completed.");
+                    ZenFragment.zenModeMilliseconds += ZenFragment.setMillis;
+                    SharedPreferences sharedPreferences1 = this.getSharedPreferences("millisInZen", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor milliEditor = sharedPreferences1.edit();
+                    milliEditor.putLong("milliZen", ZenFragment.zenModeMilliseconds);
+                    System.out.println("The value added to milliseconds is " + ZenFragment.zenModeMilliseconds);
+                    MainTabActivity.millisInZen = ZenFragment.zenModeMilliseconds;
+                    ZenTimer.timerFinished = false;
+                    zenStarted = false;
+                }
+
+                else {
+
+                    NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    Intent intent = new Intent(getApplicationContext(), MainTabActivity.class);
+                    NotificationCompat.Builder mBuilder =
+                            new NotificationCompat.Builder(getApplicationContext()).setSmallIcon(R.mipmap.ic_launcher).setContentTitle("ZEN MODE OVER!!").setContentText("Seems like you got distracted. Better luck next time!!");
+                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
+                    stackBuilder.addParentStack(MainTabActivity.class);
+                    stackBuilder.addNextIntent(intent);
+                    PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+                    mBuilder.setAutoCancel(false);
+                    //Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                    //mBuilder.setSound(alarmSound);
+                    mBuilder.setLights(Color.RED, 500, 500);
+                    mBuilder.setVibrate(pattern);
+                    mBuilder.setStyle(new NotificationCompat.InboxStyle());
+                    //mBuilder.setOngoing(true);
+                    mBuilder.setContentIntent(resultPendingIntent);
+                    notificationManager.notify(0, mBuilder.build());
+
+                    System.out.println("The value of zenStarted is " + zenStarted);
+                    System.out.println("The screen is unlocked.");
 //                Context context = getApplicationContext();
 //                CharSequence text = "The screen is unlocked. You are getting distracted!";
 //                int duration = Toast.LENGTH_LONG;
-                //zenModeDistracted++;
-                zenStarted = false;
+                    //zenModeDistracted++;
+                    zenStarted = false;
+                }
 
 
              //   Toast.makeText(context, text, duration).show();
